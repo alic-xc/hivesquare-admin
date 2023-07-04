@@ -55,7 +55,6 @@ class SearchMixin:
 def get_user(request, no_msg=None):
     url = 'users/'
     response = data_connector(request, url, None, 'get')
-    print(response)
     if response['success']:
         return response['data']
     return None
@@ -82,55 +81,6 @@ def get_user_extra(request):
         return response['data']
     else:
         return {}
-
-
-def get_services(request, query=None):
-
-    url = "services/"
-    if query:
-        url += query
-
-    return data_connector(request, url, None, 'get')
-
-
-def get_service(request, service_id):
-    url = 'services/%s' % service_id
-    response = data_connector(request, url, None, 'get')
-    if response['success']:
-        return response['data']
-    else:
-        return []
-
-
-def get_drivers(request, query=None):
-    url = 'rider/'
-    if query:
-        url = 'rider/%s' % query
-    print(url)
-    return data_connector(request, url, None, 'get')
-
-
-def connect_service_category(request):
-    """ """
-    url = 'service_category/'
-    response = data_connector(request, url, None, 'get')
-    if response['success']:
-        return response['data']
-    else:
-        return []
-
-
-def connect_save_service(request, data):
-    url = 'create_delivery/'
-    params = data
-    response = data_connector(request, url, params, 'post')
-    return response
-
-
-def connect_calculator(request, distance, duration ):
-    url = 'fare_calculator/?est_dist=%s&est_time=%s' %(distance, duration)
-    response = data_connector(request, url, None, 'get')
-    return response
 
 
 def get_vendors(request, query):
@@ -219,27 +169,6 @@ def get_date_values(**kwargs):
     return results
 
 
-def get_screenshots(request, data=None):
-    url = 'screenshots/'
-    return get_list_api(request, url, data)
-
-
-def get_screenshot(request, driver_id):
-    url = 'screenshots/%s' % driver_id
-    response = data_connector(request, url, None, 'get')
-    return response
-
-
-def get_initial_history(request, data=None):
-    url = 'staff/initial/log/'
-    return get_list_api(request, url, data)
-
-
-def get_revenue_history(request, currency_id, data=None):
-    url = 'staff/revenue/?currency=%s' % currency_id
-    return get_list_api(request, url, data)
-
-
 def get_transaction(request, token):
     if token:
         url = 'staff/transaction/%s/' % token
@@ -256,36 +185,6 @@ def get_staff_detail(request, id):
         if response['success']:
             return response['data']
     return {}
-
-
-def get_account_statements(request, data=None):
-    url = 'transaction/statement/'
-    if not data:
-        response = data_connector(request, url, None, 'get')
-    else:
-        response = data_connector(request, url, data, 'get')
-    if response['success']:
-        return response['data']
-    else:
-        return {}
-
-
-def download_merchant_statements(request, data):
-    url = 'transaction/statement/download/'
-    response = file_download_connector(request, url, data, 'get')
-    if response['success']:
-        return response['data']
-    else:
-        return {}
-
-
-def get_receipt(request, token):
-    url = 'transaction/receipts/'
-    response = file_download_connector(request, url, {'token': token}, 'get')
-    if response['success']:
-        return response['data']
-    else:
-        return {}
 
 
 def get_custom_users(request, query, uuid):
@@ -568,8 +467,6 @@ def get_list_api(request, url, data=None):
         return {}
 
 
-
-
 def phone_formatter(phone):
     """ Validate user phone number """
 
@@ -662,3 +559,8 @@ def post_request(request, url, params):
 def patch_request(request, url, params):
     response = data_connector(request, url, params, 'patch')
     return response
+
+
+def params_extracter(request):
+    get_all_params = request.query_params
+    print(get_all_params)

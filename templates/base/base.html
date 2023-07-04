@@ -164,16 +164,16 @@
                         <span>Settings</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false" style="">
-                        <li><a class="text-white" href="{% url 'customers' %}">Category</a></li>
+                        <li><a class="text-white" href="{% url 'category' %}">Category</a></li>
                     </ul>
                     <ul class="sub-menu" aria-expanded="false" style="">
                         <li><a class="text-white" href="{% url 'customers' %}">Sub Category</a></li>
                     </ul>
                     <ul class="sub-menu" aria-expanded="false" style="">
-                        <li><a class="text-white" href="{% url 'customers' %}">Tax</a></li>
+                        <li><a class="text-white" href="{% url 'customers' %}">Slideshow</a></li>
                     </ul>
                     <ul class="sub-menu" aria-expanded="false" style="">
-                        <li><a class="text-white" href="{% url 'customers' %}">Discount</a></li>
+                        <li><a class="text-white" href="{% url 'customers' %}">Subscription</a></li>
                     </ul>
                 </li>
 
@@ -299,7 +299,11 @@
                     },
                     'account':{
                         'deletion': "Are you sure you want to delete this account. Please note it is irreversible"
+                    },
+                    'category':{
+                        'delete': "Are you sure you want to delete this category. Please note it is irreversible"
                     }
+
 
                 }
                 return msgObj[actionType][action]

@@ -561,6 +561,18 @@ def patch_request(request, url, params):
     return response
 
 
+def delete_request(request, url, params):
+    response = data_connector(request, url, params, 'delete')
+    return response
+
+
 def params_extracter(request):
-    get_all_params = request.query_params
-    print(get_all_params)
+    params = request.GET
+    query_string = ""
+    for param in params:
+        query_string += param + "=" + params[param] + "&"
+
+    return {
+        "url": query_string,
+        "config": params
+    }

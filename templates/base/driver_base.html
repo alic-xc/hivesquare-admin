@@ -1,0 +1,74 @@
+{% load humanize %}
+{% load customer_custom_tags %}
+<table class="table table-hover datatable nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+    <thead>
+        <tr>
+            <th>Date Joined</th>
+            <th>Rider ID</th>
+            <th>Full Name</th>
+            <th>Phone</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for driver in drivers %}
+            <tr>
+                <td>{{ driver.date_created }}</td>
+                <td>{{ driver.rider_id }}</td>
+                <td>{{ driver.user.name }}</td>
+                <td>{{ driver.user.phone }}</td>
+                <td>{% if driver.company %} <a href="{% url 'merchant' driver.company %}">merchant</a> {% else %} individual {% endif %} </td>
+
+                <td>
+                    {% if driver.status == 'pending' %}
+                        <span class="float-right badge badge-pill  badge-info ">
+                    {% elif driver.status == 'approved' or driver.status == 'agreed' %}
+                        <span class="float-right badge badge-pill  badge-success">
+                    {% elif driver.status == 'active' or driver.status == 'activated' %}
+                        <span class="float-right badge badge-pill  badge-success">
+                    {% else %}
+                        <span class="float-right badge badge-pill  badge-danger">
+                    {% endif %}{{ driver.status }}</span>
+                </td>
+
+                <td class="text-center">
+                    <div class="btn-group mr-2" role="group" aria-label="Second group">
+                        <a href="{% url 'driver' driver.id %}" class="btn btn-sm btn-info"  data-toggle="tooltip" data-placement="top" title="View Rider" data-original-title="View Rider"><i class="fa fa-eye"></i></a>
+                    </div>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="9" class="text-center text-danger">No record found.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+{% if display_filter %}
+
+    <tfoot>
+        <tr>
+            <td colspan="9">
+                <ul class="pagination justify-content-center mb-0">
+                    {% if pagination.prev %}
+                        <li class="page-item"><a href="?{{ pagination.prev }}" class="page-link"
+                                                 tabindex="-1"><i class="fa fa-angle-left"></i> Prev</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1"><i
+                                class="fa fa-angle-left"></i> Prev</a></li>
+                    {% endif %}
+                    {% if pagination.next %}
+                        <li class="page-item"><a href="?{{ pagination.next }}" class="page-link">Next <i
+                                class="fa fa-angle-right"></i></a></li>
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="" tabindex="-1">Next
+                            <i class="fa fa-angle-right"></i></a></li>
+                    {% endif %}
+                </ul>
+            </td>
+        </tr>
+    </tfoot>
+{% endif %}
+</table>

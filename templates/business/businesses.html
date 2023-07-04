@@ -1,0 +1,201 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+{% load customer_custom_tags %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-size-18">Businesses</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Businesses</a></li>
+                        <li class="breadcrumb-item active">All</li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card mini-stats-wid">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body">
+                                    <p class="text-muted font-weight-medium">Total Businesses</p>
+                                    <h4 class="mb-0">{{ analytics.total_users|intcomma }}</h4>
+                                </div>
+
+                                <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
+                                    <span class="avatar-title">
+                                        <i class="bx bx-copy-alt font-size-24"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="col-md-3">
+                    <div class="card mini-stats-wid">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body">
+                                    <p class="text-muted font-weight-medium">Total Verified Businesses</p>
+                                    <h4 class="mb-0">{{ analytics.total_active_users|intcomma }}</h4>
+                                </div>
+
+                                <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
+                                    <span class="avatar-title rounded-circle bg-primary">
+                                        <i class="bx bx-archive-in font-size-24"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card mini-stats-wid">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body">
+                                    <p class="text-muted font-weight-medium">Total Disabled Businesses</p>
+                                    <h4 class="mb-0">{{ analytics.total_registered_users|intcomma }}</h4>
+                                </div>
+
+                                <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
+                                    <span class="avatar-title">
+                                        <i class="bx bx-copy-alt font-size-24"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card mini-stats-wid">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body">
+                                    <p class="text-muted font-weight-medium">Total </p>
+                                    <h4 class="mb-0">{{ analytics.total_inactive_users|intcomma }}</h4>
+                                </div>
+
+                                <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
+                                    <span class="avatar-title rounded-circle bg-primary">
+                                        <i class="bx bx-purchase-tag-alt font-size-24"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card" style="background: #f1f1f1;">
+                <div class="card-body">
+                    <form>
+                        <div class="form-row">
+                            <div class="col-5 form-group">
+                                <label> Search </label>
+                                <input class="form-control"  value="{{ search_value }}" type="text" placeholder="Search by email or phone" name="search_value"/>
+                            </div>
+                            <div class="col-1 form-group">
+                                <label>&nbsp;</label>
+                                <br/>
+                                <button class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                            </div>
+                            <input type="hidden" value="user" name="search_type">
+                        </div>
+                    </form>
+                {% include 'base/search_base.html' %}
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <table class="table table-centered table-nowrap table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col" style="width: 70px;">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Vendor</th>
+                                    <th scope="col">Avg. Rating</th>
+                                    <th scope="col">Is Active</th>
+                                    <th scope="col">Is Premium</th>
+                                    <th scope="col">Date Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for business in businesses.results %}
+                                <tr class="customer-row-link" style="cursor:pointer" data-href="{% url 'business_details' business.id %}">
+                                    <td>
+                                        <div class="avatar-xs">
+                                            <span class="avatar-title rounded-circle">
+                                                {{ business.name|first|upper }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>{{ business.name|capfirst }}</td>
+                                    <td>{{ business.category_name }}</td>
+                                    <td>{{ business.vendor }}</td>
+                                    <td>{{ business.avg_rating }}</td>
+                                    <td>{% if not business.is_active %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
+                                    <td>{% if not business.is_premium %}<span class="badge badge-info">normal</span> {% else %} <span class="badge badge-warning">premium</span> {% endif %}</td>
+                                    <td>{{ business.date_created }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center text-danger"> No customer available</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            {% if pagination == True %}
+                                <p class="text-center mt-4"> Total entries: {{ transactions.count }}</p>
+                                <ul class="pagination justify-content-center mb-0">
+                                    {% if prev_page_url %}
+                                        <li class="page-item"> <a class="page-link" href="{{ prev_page_url }}" tabindex="-1"><i class="fa fa-angle-left"></i> Prev</a> </li>
+                                    {% else %}
+                                        <li class="page-item disabled"> <a class="page-link" href="#" tabindex="-1"><i class="fa fa-angle-left"></i> Prev</a> </li>
+                                    {% endif %}
+                                    {% if next_page_url %}
+                                        <li class="page-item"> <a class="page-link" href="{{ next_page_url }}">Next <i class="fa fa-angle-right"></i></a> </li>
+                                    {% else %}
+                                        <li class="page-item disabled"> <a class="page-link" href="" tabindex="-1">Next <i class="fa fa-angle-right"></i></a> </li>
+                                    {% endif %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+        $(document).ready(function(){
+            $('.customer-row-link').click(function(){
+                window.location = $(this).data('href')
+            })
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,364 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load customer_custom_tags %}
+{% load humanize %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-size-18">merchant</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">merchant</a></li>
+                        <li class="breadcrumb-item active">{{ merchant.name|capfirst }}</li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% if merchant %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <div class="media">
+                                <div class="mr-3">
+                                    <div class="avatar-md">
+                                            <h1 class="avatar-title rounded-circle">
+                                                {{ merchant.name|first|upper }}
+                                            </h1>
+                                        </div>
+                                </div>
+                                <div class="media-body align-self-center">
+                                    <div class="text-muted">
+                                        <p class="mb-2">Welcome to {{ merchant.name|capfirst }}'s  dashboard</p>
+                                        <h5 class="mb-1">{{ merchant.admin.name }}</h5>
+                                        <p class="mb-0 badge badge-dark">
+                                            merchant Account
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-7 align-self-center">
+                            <div class="text-lg-center mt-4 mt-lg-0">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div>
+                                            <p class="text-muted text-truncate mb-2">Email</p>
+                                            <h5 class="mb-0">{{ merchant.admin.email }}</h5>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-8">
+                                        <div>
+                                            {% if not merchant.admin.access %}
+                                                <button class=" confirm btn btn-success btn-sm text-white mr-2"  data-action-type="activation" data-action="activate" data-href="{% url 'merchant_action' merchant.id %}?action=activation&action_type=activate"><i class="fa fa-check-circle"></i> Activate</button>
+                                            {% else %}
+                                                <button class=" confirm btn btn-danger btn-sm text-white mr-2"  data-action-type="activation" data-action="deactivate" data-href="{% url 'merchant_action' merchant.id %}?action=activation&action_type=deactivate"><i class="fa fa-times-circle"></i> Deactivate</button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end row -->
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <form id="dateSort">
+                        <div class="form-row">
+                            <div class="col-3 form-group">
+                                <label> From </label>
+                                <input type="date" id="from_date" name="from_date" class="form-control" >
+                            </div>
+                            <div class="col-3 form-group">
+                                <label> To </label>
+                                <input type="date" id="to_date" name="to_date" class="form-control" >
+                            </div>
+
+                            <div class="col-3 form-group">
+                                <label>&nbsp;</label>
+                                <br/>
+                                <input type="hidden" name="merchant_id" value="{{ merchant_id }}">
+                                <button class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="avatar-xs mr-3">
+                                    <span class="avatar-title rounded-circle bg-soft-primary text-primary font-size-18">
+                                        <i class="bx bx-copy-alt"></i>
+                                    </span>
+                                </div>
+                                <h5 class="font-size-14 mb-0">Revenue</h5>
+                            </div>
+                            <div class="text-muted mt-4">
+                                <h4>&#8358; <span id="revenue">0</span></h4>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="avatar-xs mr-3">
+                                    <span class="avatar-title rounded-circle bg-soft-primary text-primary font-size-18">
+                                        <i class="bx bx-copy-alt"></i>
+                                    </span>
+                                </div>
+                                <h5 class="font-size-14 mb-0">Total Orders</h5>
+                            </div>
+                            <div class="text-muted mt-4">
+                                <h4><span id="totalDeliveryCount">0</span> </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="avatar-xs mr-3">
+                                    <span class="avatar-title rounded-circle bg-soft-primary text-primary font-size-18">
+                                        <i class="bx bx-copy-alt"></i>
+                                    </span>
+                                </div>
+                                <h5 class="font-size-14 mb-0">Completed Orders</h5>
+                            </div>
+                            <div class="text-muted mt-4">
+                                <h4><span id="deliveryCount">0</span></h4>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="avatar-xs mr-3">
+                                    <span class="avatar-title rounded-circle bg-soft-primary text-primary font-size-18">
+                                        <i class="bx bx-copy-alt"></i>
+                                    </span>
+                                </div>
+                                <h5 class="font-size-14 mb-0">Total Riders</h5>
+                            </div>
+                            <div class="text-muted mt-4">
+                                <h4> <span id="riders">0</span></h4>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title">Details</h4>
+                    <div>
+                        <a href="{% url 'services' %}?service_type=merchant&company_id={{ merchant.id }}" class="btn btn-success">View deliveries</a>
+                        <a href="{% url 'drivers' %}?company_id={{ merchant.id }}" class="btn btn-success">View drivers</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <td>{{ merchant.admin.name|capfirst }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email</th>
+                                        <td>{{ merchant.admin.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Phone</th>
+                                        <td>{{ merchant.admin.phone }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Address</th>
+                                        <td>{{ merchant.admin.address|default:"None" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Country</th>
+                                        <td>{{ merchant.country|capfirst|default:"None" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date Joined </th>
+                                        <td>{{ merchant.date_created }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Kyc Completed</th>
+                                        <td>{% if not merchant.is_verified %}<span class="badge badge-danger">Not completed</span> {% else %} <span class="badge badge-success">Completed</span> {% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Active</th>
+                                        <td>{% if not merchant.admin.access %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="card-title">Banks</h4>
+                            <a href="{% url 'withdrawals' %}?company_id={{ merchant.id }}" class="btn btn-success">View withdrawal logs</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Bank Name</th>
+                                                    <th>Acc Name</th>
+                                                    <th>Acc No</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% if merchant.bank %}
+                                                <tr>
+                                                    <td>{{ merchant.bank.bank }}</td>
+                                                    <td>{{ merchant.bank.account_name }}</td>
+                                                    <td>{{ merchant.bank.account_number }}</td>
+                                                </tr>
+                                                {% else %}
+                                                <tr>
+                                                <td class="text-danger text-center" colspan="3">No bank added</td>
+                                                </tr>
+                                                {% endif %}
+                                            </tbody>
+
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title">Documents</h4>
+                        <div>
+                            <button class=" confirm btn btn-success btn-sm text-white mr-2"  data-action-type="kyc" data-action="approve" data-href="{% url 'merchant_action' merchant.id %}?action=kyc&action_type=approve"><i class="fa fa-check-circle"></i>Approve</button>
+                            <button class=" confirm btn btn-danger btn-sm text-white mr-2"  data-action-type="kyc" data-action="disapprove" data-href="{% url 'merchant_action' merchant.id %}?action=kyc&action_type=disapprove"><i class="fa fa-times-circle"></i>Disapprove</button>
+                            </div>
+                    </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Document</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% if merchant.documents.cac %}
+                                    <tr>
+                                       <td>C.A.C</td>
+                                       <td><a href="{{ merchant.documents.cac }}">view</a></td>
+                                    </tr>
+                                        {% else %}
+                                        <tr>
+                                        <td>No record found</td>
+                                        </tr>
+                                        {% endif %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {% else %}
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="text-danger text-center"> merchant not found.</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <!-- end row -->
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'assets/js/merchant.js' %}"></script>
+     <script type="text/javascript">
+
+        $(document).ready(function(){
+            datePickerInit()
+            const urlParams = $('#dateSort').serialize()
+            dashboardRequest(urlParams)
+            $('#dateSort').submit(function(e){
+                e.preventDefault()
+                dashboardRequest($(this).serialize() )
+            })
+
+
+        })
+
+        function dashboardRequest(queryParams){
+            const url = "{% url 'analytics' %}?" + queryParams
+            dashboardWidgetsGraph(url)
+        }
+
+    </script>
+{% endblock script %}

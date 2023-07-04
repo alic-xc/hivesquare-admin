@@ -1,0 +1,170 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load customer_custom_tags %}
+{% load humanize %}
+{% block stylesheet %}
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h4 class="mb-0 font-size-18 mr-4">Service</h4>
+
+                </div>
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Service</a></li>
+                        <li class="breadcrumb-item active">{{ service.track_id }}</li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+    {% if service %}
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title">Service Overview</h4>
+                </div>
+                <div class="card-body">
+                    <p class="clearfix"><span class="float-left">Date Created</span><span class="float-right text-muted" id="rating">{{ service.created_date }}</span></p>
+                      <p class="clearfix">
+                          <span class="float-left">Status</span>
+                          <span class="float-right text-muted" >
+                              {% if service.status == 'pending' %}
+                                 <span class="badge badge-light">
+                             {% elif service.status == 'accepted'  %}
+                                 <span class="badge badge-warning" style="background: orange;">
+                             {% elif service.status == 'arrived'  %}
+                                 <span class="badge badge-primary col-white">
+                             {% elif service.status == 'in-transit'  %}
+                                 <span class="badge badge-info col-white" >
+                             {% elif service.status == 'returning'  %}
+                                 <span class="badge badge-primary" style="background:purple;">
+                             {% elif service.status == 'completed'  %}
+                                 <span class="badge badge-success col-white">
+                             {% else %}
+                                <span class="badge badge-danger">
+                             {% endif %}
+                                {{ service.status }}
+                              </span>
+                              </span>
+                      </p>
+                      <p class="clearfix">
+                          <span class="float-left">Track ID</span>
+                          <b class="float-right text-muted">{{ service.track_id }}</b>
+                      </p>
+                      {% if service.time_stamp.accepted_time  %}
+                        <p class="clearfix"><span class="float-left">Acceptance Time</span><span class="float-right text-muted" id="estimatedCost">{{ service.time_stamp.accepted_time }}</span></p>
+                      {% endif %}
+                      {% if service.time_stamp.arrived_time %}
+                         <p class="clearfix"><span class="float-left">Arrival Time</span><span class="float-right text-muted" id="estimatedCost">{{ service.time_stamp.arrived_time }}</span></p>
+                      {% endif %}
+                      {% if service.time_stamp.picked_up_time %}
+                          <p class="clearfix"><span class="float-left">Pickup Time</span><span class="float-right text-muted" id="estimatedCost">{{ service.time_stamp.picked_up_time }}</span></p>
+                      {% endif %}
+                      {% if service.time_stamp.completed_time %}
+                          <p class="clearfix"><span class="float-left">Completed Time</span><span class="float-right text-muted" id="estimatedCost">{{ service.time_stamp.completed_time }}</span></p>
+                      {% endif %}
+                      {% if service.time_stamp.cancelled_time %}
+                          <p class="clearfix"> <span class="float-left">Cancelled By</span> <span class="float-right text-muted">{{ service.time_stamp.cancelled_by.name }}</span></p>
+                          <p class="clearfix"> <span class="float-left">User Type</span> <span class="float-right text-muted">{{ service.time_stamp.cancelled_by.type }}</span></p>
+                          <p class="clearfix"><span class="float-left">Cancelled Time</span><span class="float-right text-muted" id="estimatedCost">{{ service.time_stamp.cancelled_time }}</span></p>
+                      {% endif %}
+
+                      <p class="clearfix"><span class="float-left">Amount</span><span class="float-right text-muted" id="estimatedCost">{{ service.estimated_cost|intcomma }}</span></p>
+                      <p class="clearfix"><span class="float-left">Payment Mode</span><span class="float-right text-muted" id="payment">{{ service.payment_mode }}</span></p>
+                      <p class="clearfix"><span class="float-left">Category</span><span class="float-right text-muted" id="category">{{ service.delivery_category.name }}</span></p>
+                      <p class="clearfix"><span class="float-left">Description</span><span class="float-right text-muted" id="description">{{ service.description }}</span></p>
+                      <p class="clearfix"><span class="float-left">Pickup Code</span><span class="float-right font-weight-bolder font-18" id="code">{{ service.verification_code }}</span></p>
+                      <p class="clearfix"><span class="float-left">Completion Code</span><span class="float-right font-weight-bolder font-18" id="code">{{ service.completion_code }}</span></p>
+                      <p class="clearfix"><span class="float-left">Start Time</span><span class="float-right text-muted" id="startTime">{{ service.start_time }}</span></p>
+                      <p class="clearfix"><span class="float-left">End Time</span><span class="float-right text-muted" id="endTime">{{ service.end_time }}</span></p>
+                      <p class="clearfix"><span class="float-left">Rating</span><span class="float-right text-muted" id="rating">{{ service.rating.rating }}</span></p>
+                      <p class="clearfix"><span class="float-left">Created By</span><span class="float-right text-muted" id="rating">{{ service.user.name }}</span></p>
+                      <p class="clearfix"><span class="float-left">User Phone</span><span class="float-right text-muted" id="rating">{{ service.user.phone }}</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+
+            <div class="card">
+                  <div class="card-header">
+                    <h4>Location Details</h4>
+                  </div>
+                  <div class="card-body">
+                      <p class="clearfix"><span class="float-left">Pickup Address</span><span class="float-right text-muted" id="pickup" data-pickup-longitude="{{ service.pick_up_longitude }}" data-pickup-latitude="{{ service.pick_up_latitude }}">{{ service.pick_up_address }}</span></p>
+                      <p class="clearfix"><span class="float-left">Pickup Description</span><span class="float-right text-muted">{{ service.contact.pickup_description }}</span></p>
+                      <p class="clearfix"><span class="float-left">Destination Address</span><span class="float-right text-muted" id="destination" data-destination-longitude="{{ service.destination_longitude }}" data-destination-latitude="{{ service.destination_latitude }}">{{ service.destination_address }}</span></p>
+                      <p class="clearfix"><span class="float-left">Destination Description</span><span class="float-right text-muted" >{{ service.contact.destination_description }}</span></p>
+                      <p class="clearfix"><span class="float-left">Estimated Distance</span><span class="float-right text-muted" id="estDistance">{{ service.estimated_distance }}</span></p>
+                      <p class="clearfix"><span class="float-left">Estimated Time</span><span class="float-right text-muted" id="estTime">{{ service.estimated_time }}</span></p>
+                  </div>
+                </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                  <div class="card-header">
+                    <h4>User Details</h4>
+                  </div>
+                  <div class="card-body">
+                      <p class="clearfix"><span class="float-left">Name</span><span class="float-right text-muted" id="name">{{ service.contact.sender_name }}</span></p>
+                      <p class="clearfix"><span class="float-left">Phone</span><span class="float-right text-muted" id="phone">{{ service.contact.sender_phone }}</span></p>
+                      <p class="clearfix"><span class="float-left">Contact Name</span><span class="float-right text-muted" id="contactName">{{ service.contact.receiver_name }} {{ service.contact.recipient_name }} {{ service.contact.contact_name }}</span></p>
+                      <p class="clearfix"><span class="float-left">Contact Phone</span><span class="float-right text-muted" id="contactPhone">{{ service.contact.receiver_phone }} {{ service.contact.recipient_phone }} {{ service.contact.contact_phone }}</span></p>
+                  </div>
+                </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                  <div class="card-header">
+                    <h4>Rider Details</h4>
+                  </div>
+                  <div class="card-body">
+                      <p class="clearfix"><span class="float-left">Name</span><span class="float-right text-muted" id="riderName">{% if service.rider.id %}<a href="{% url 'driver' service.rider.id %}">{{ service.rider.name }}</a></span>{% else %}<span>{{ service.rider.name }}</span>{% endif %}</p>
+                      <p class="clearfix"><span class="float-left">Phone</span><span class="float-right text-muted" id="riderPhone">{{ service.rider.phone }}</span></p>
+                      <p class="clearfix"><span class="float-left">Vehicle Name</span><span class="float-right text-muted" id="vehicleName">{{ service.rider.vehicle.name }} ({{ service.rider.vehicle.reg }})</span></p>
+                      <p class="clearfix"><span class="float-left">Vehicle Type</span><span class="float-right text-muted" id="vehicleReg">{{ service.rider.vehicle.type }}</span></p>
+                  </div>
+                </div>
+        </div>
+    {% else %}
+        <div class="mx-auto">
+            <h5 class="text-center text-danger p-3">Not a valid service</h5>
+        </div>
+    {% endif %}
+
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'assets/js/merchant.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            const imageURL = "{% static 'assets/img/car_marker.png' %}"
+            const driverID = "{{ services.user.id }}"
+            const pickUp = $('#pickup').data()
+            const destination = $('#destination').data()
+            const pickupPoint = {lat: parseFloat(pickUp.pickupLatitude) , lng: parseFloat(pickUp.pickupLongitude) }
+            const destinationPoint = {lat: parseFloat(destination.destinationLatitude), lng: parseFloat(destination.destinationLongitude) }
+            window.initMap = serviceMap(pickupPoint, destinationPoint, driverID, imageURL)
+            loadMapLibrary()
+
+            $('#assignRider').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget)
+                const serviceID = button.data('service')
+                $('#serviceInput').val(serviceID)
+            })
+
+            $('#assignRider').on('hide.bs.modal', function(event){
+                $('#serviceInput').val('')
+            })
+        })
+    </script>
+
+{% endblock %}

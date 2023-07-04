@@ -1,0 +1,325 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load customer_custom_tags %}
+{% load humanize %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-size-18">Customer</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Customer</a></li>
+                        <li class="breadcrumb-item active">{{ customer.first_name|capfirst }} {{ customer.last_name|capfirst }}</li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% if customer %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <div class="media">
+                                <div class="mr-3">
+                                    <div class="avatar-md">
+                                            <h1 class="avatar-title rounded-circle">
+                                                {{ customer.first_name|first|upper }}
+                                            </h1>
+                                        </div>
+                                </div>
+                                <div class="media-body align-self-center">
+                                    <div class="text-muted">
+                                        <p class="mb-2">Welcome to {{ customer.first_name|capfirst }}'s  dashboard</p>
+                                        <h5 class="mb-1">{{ customer.entity.details.name }}</h5>
+                                        <p class="mb-0 badge badge-dark">
+                                            Individual Account
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-7 align-self-center">
+                            <div class="text-lg-center mt-4 mt-lg-0">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div>
+                                            <p class="text-muted text-truncate mb-2">Email</p>
+                                            <h5 class="mb-0">{{ customer.email }}</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div>
+                                            <p class="text-muted text-truncate mb-2">Mobile Number</p>
+                                            <h5 class="mb-0">{{ customer.phone }}</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-5">
+                                        <div>
+                                            {% if customer.access %}
+                                                <a href="{% url 'customer_control' user_id 'deactivate' %}" class="btn btn-danger">Deactivate User </a>
+                                            {% else %}
+                                                <a href="{% url 'customer_control' user_id 'activate'  %}" class="btn btn-success">Activate User </a>
+                                            {% endif %}
+{#                                            <button data-action-type="account" data-action="deletion" data-href="{% url 'account_deletion' user_id  "customers" %}" class="confirm btn btn-danger"><i class="fa fa-trash"></i> Delete</button>#}
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end row -->
+                </div>
+            </div>
+        </div>
+    </div>
+{#            <div class="row">#}
+{#        <div class="col-xl-12">#}
+{#            <div class="card">#}
+{#                <div class="card-body">#}
+{#                    <form id="dateSort">#}
+{#                        <div class="form-row">#}
+{#                            <div class="col-3 form-group">#}
+{#                                <label> From </label>#}
+{#                                <input type="date" id="from_date" name="from_date" class="form-control" >#}
+{#                            </div>#}
+{#                            <div class="col-3 form-group">#}
+{#                                <label> To </label>#}
+{#                                <input type="date" id="to_date" name="to_date" class="form-control" >#}
+{#                            </div>#}
+{#                            <div class="col-3 form-group">#}
+{#                                <label>&nbsp;</label>#}
+{#                                <br/>#}
+{#                                <input type="hidden" name="user_id" value="{{ user_id }}">#}
+{#                                <input type="hidden" name="sort_by" value="none"/>#}
+{#                                <button class="btn  btn-primary"><i class="fa fa-search"></i></button>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </form>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="avatar-xs mr-3">
+                                    <span class="avatar-title rounded-circle bg-soft-primary text-primary font-size-18">
+                                        <i class="bx bx-copy-alt"></i>
+                                    </span>
+                                </div>
+                                <h5 class="font-size-14 mb-0">Total Spent</h5>
+                            </div>
+                            <div class="text-muted mt-4">
+                                <h4 class="">&#8358; {{ analytics.total_spent.amount|intcomma|default_if_none:0 }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="avatar-xs mr-3">
+                                    <span class="avatar-title rounded-circle bg-soft-primary text-primary font-size-18">
+                                        <i class="bx bx-copy-alt"></i>
+                                    </span>
+                                </div>
+                                <h5 class="font-size-14 mb-0">Total Orders</h5>
+                            </div>
+                            <div class="text-muted mt-4">
+                                <h4 class="total">{{ analytics.total_orders|intcomma }}</h4>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="avatar-xs mr-3">
+                                    <span class="avatar-title rounded-circle bg-soft-primary text-primary font-size-18">
+                                        <i class="bx bx-copy-alt"></i>
+                                    </span>
+                                </div>
+                                <h5 class="font-size-14 mb-0">Processing Orders</h5>
+                            </div>
+                            <div class="text-muted mt-4">
+                                <h4 class="cancelled">{{ analytics.total_processing_orders|intcomma }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="avatar-xs mr-3">
+                                    <span class="avatar-title rounded-circle bg-soft-primary text-primary font-size-18">
+                                        <i class="bx bx-copy-alt"></i>
+                                    </span>
+                                </div>
+                                <h5 class="font-size-14 mb-0">Completed Orders</h5>
+                            </div>
+                            <div class="text-muted mt-4">
+                                <h4 class="">{{ analytics.total_completed_orders|intcomma }}</h4>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Customer Details</h4>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <td>{{ customer.first_name|capfirst }} {{ customer.last_name|capfirst }}</td>
+                                    </tr>
+{#                                    <tr>#}
+{#                                        <th>Business Name</th>#}
+{#                                        <td>{{ customer.business|default:"None" }}</td>#}
+{#                                    </tr>#}
+                                    <tr>
+                                        <th>Email</th>
+                                        <td>{{ customer.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Phone</th>
+                                        <td>{{ customer.phone }}</td>
+                                    </tr>
+{#                                    <tr>#}
+{#                                        <th>Address</th>#}
+{#                                        <td>{{ customer.address }}</td>#}
+{#                                    </tr>#}
+{#                                    <tr>#}
+{#                                        <th>Referral Code</th>#}
+{#                                        <td>{{ customer.referral_code }}</td>#}
+{#                                    </tr>#}
+                                    <tr>
+                                        <th>Date Joined</th>
+                                        <td>{{ customer.date_joined }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Activated</th>
+                                        <td>{% if not customer.access %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+{#        <div class="col-6">#}
+{#            <div class="row">#}
+{#                <div class="col-12">#}
+{#                    <div class="card">#}
+{#                        <div class="card-body">#}
+{#                            <div class="card-header bg-white p-0 d-flex justify-content-between align-items-center">#}
+{#                                <h4 class="card-title">Extra Information</h4>#}
+{#                            </div>#}
+{##}
+{#                            <hr>#}
+{#                            <div class="row">#}
+{#                                <div class="col-md-12">#}
+{#                                    <div class="table-responsive">#}
+{#                                        <table class="table">#}
+{#                                            <thead>#}
+{#                                                <tr>#}
+{#                                                    <th>Document</th>#}
+{#                                                    <th>Action</th>#}
+{#                                                </tr>#}
+{#                                            </thead>#}
+{#                                            <tbody>#}
+{#                                                {% for document in customer.docs %}#}
+{#                                                    <tr>#}
+{#                                                        <td>#}
+{#                                                            {% if document == 'id_card' %}#}
+{#                                                                <a href="{{ media_url }}{{ customer.docs.id_card }}" target="_blank">ID Card</a>#}
+{#                                                            {% elif document == 'proof_address' %}#}
+{#                                                                <a href="{{ media_url }}{{ customer.docs.proof_address }}">Proof of Address</a>#}
+{#                                                            {% endif %}#}
+{#                                                        </td>#}
+{#                                                        <td>#}
+{#                                                            <a href="{% url 'delete_customer_files' customer.id 'id_card' 'welldone' %}"><i class="fa fa-trash"></i></a>#}
+{#                                                        </td>#}
+{#                                                    </tr>#}
+{#                                                    {% empty %}#}
+{#                                                    <tr>#}
+{#                                                        <td colspan="2" class="text-center text-danger">No document found</td>#}
+{#                                                    </tr>#}
+{#                                                {% endfor %}#}
+{#                                            </tbody>#}
+{#                                        </table>#}
+{##}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{##}
+{#                        </div>#}
+{#                    </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+
+    </div>
+
+    {% else %}
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="text-danger text-center"> User not found.</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <!-- end row -->
+
+{% endblock %}
+{% block script %}
+    <script src="{% static 'assets/js/merchant.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            datePickerInit()
+            const urlParams = $('#dateSort').serialize()
+            dashboardRequest(urlParams)
+            $('#dateSort').submit(function(e){
+                e.preventDefault()
+                dashboardRequest($(this).serialize())
+            })
+            function dashboardRequest(queryParams){
+                const url = "{% url 'analytics' %}?" + queryParams
+                dashboardWidgetsGraph(url)
+            }
+        }
+        )
+    </script>
+{% endblock script %}

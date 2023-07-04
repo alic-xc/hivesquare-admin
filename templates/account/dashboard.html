@@ -1,0 +1,250 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load humanize %}
+{% load customer_custom_tags %}
+{% block stylesheet %}
+    <link href="{% static 'assets/css/bootstrap-select.min.css' %}" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
+    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fint.js"></script>
+    <style type="text/css">
+
+            /* Bootstrap-select */
+.bootstrap-select.form-control {
+  padding: 0;
+}
+.bootstrap-select > .dropdown-toggle.bs-placeholder {
+  color: #4c4d4d;
+  font-weight: normal;
+}
+.bootstrap-select > .dropdown-toggle.bs-placeholder:hover, .bootstrap-select > .dropdown-toggle.bs-placeholder:focus, .bootstrap-select > .dropdown-toggle.bs-placeholder:active {
+  color: #4c4d4d;
+  font-weight: normal;
+}
+.bootstrap-select .dropdown-item:focus, .bootstrap-select .dropdown-item:hover:not(.dropdown-item.active) {
+  background-color: #f5f5f5;
+}
+.bootstrap-select .dropdown-menu li.active small {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.bootstrap-select > .dropdown-toggle {
+  padding: .700rem 1.50rem .700rem .75rem !important;
+  box-shadow: none !important;
+  font-weight: normal;
+}
+.bootstrap-select > .dropdown-toggle.custom-select:after {
+  border: none;
+}
+.bootstrap-select .dropdown-toggle.custom-select .filter-option {
+  height: auto;
+}
+.bootstrap-select .dropdown-toggle .filter-option-inner-inner {
+  -ms-flex-align: center !important;
+  align-items: center !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+}
+.bootstrap-select .dropdown-menu li a {
+  -ms-flex-align: center !important;
+  align-items: center !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+}
+.bootstrap-select.fit-width .dropdown-toggle .filter-option {
+  width: auto;
+}
+.bootstrap-select > select.mobile-device:focus + .dropdown-toggle, .bootstrap-select .dropdown-toggle:focus {
+  outline: none !important;
+}
+
+.currency-flag {
+  min-width: 24px;
+}
+
+.currency-flag-sm {
+  min-width: 16px;
+}
+
+.currency-flag-lg {
+  min-width: 36px;
+}
+
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-3">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h4 class="card-title mb-2">Monthly Revenue</h4>
+                            <p class="text-muted mb-1">This month</p>
+                            <h3>&#8358; {{ dashboard.revenue.current_month_revenue.amount|default:0|intcomma }}</h3>
+                            <p class="text-muted mb-1">Last month</p>
+                            <h3>&#8358; {{ dashboard.revenue.prev_month_revenue.amount|default:0|intcomma }}</h3>
+
+                        </div>
+                    </div>
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h4 class="card-title text-success  mb-2">Total Earnings</h4>
+                            <h3 class="mb-2">&#8358; {{ dashboard.earnings.total_earnings.amount|default:0|intcomma }}</h3>
+                            <h4 class="card-title text-success mb-2">Monthly Earning</h4>
+                            <p class="text-muted mb-1">This month</p>
+                            <h3>&#8358; {{ dashboard.earnings.current_month_earnings.amount|default:0|intcomma }}</h3>
+                            <p class="text-muted mb-1">Last month</p>
+                            <h3>&#8358; {{ dashboard.earnings.prev_month_earnings.amount|default:0|intcomma }}</h3>
+
+                        </div>
+                    </div>
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h4 class="card-title text-success mb-2">Total Store Earnings</h4>
+                            <h3>&#8358; {{ dashboard.total_rider_earnings|default:0|intcomma }}</h3>
+                        </div>
+                    </div>
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h4 class="card-title text-success mb-2">Total Premium Subscription</h4>
+                            <h3>&#8358; {{ dashboard.total_debt|default:0|intcomma }}</h3>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card mini-stats-wid">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body">
+                                    <p class="text-muted font-weight-medium">Orders</p>
+                                    <h4 class="mb-0">{{ dashboard.total_service|intcomma }}</h4>
+                                </div>
+
+                                <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
+                                    <span class="avatar-title">
+                                        <i class="bx bx-briefcase font-size-24"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+            <div class="card mini-stats-wid">
+                <div class="card-body">
+                    <div class="media">
+                        <div class="media-body">
+                            <p class="text-muted font-weight-medium">Total Users</p>
+                            <h4 class="mb-0">{{ dashboard.total_users|intcomma }}</h4>
+                        </div>
+
+                        <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
+                            <span class="avatar-title">
+                                <i class="bx bx-copy-alt font-size-24"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                <div class="col-md-3">
+            <div class="card mini-stats-wid">
+                <div class="card-body">
+                    <div class="media">
+                        <div class="media-body">
+                            <p class="text-muted font-weight-medium">Total Vendors</p>
+                            <h4 class="mb-0">{{ dashboard.total_riders|intcomma }}</h4>
+                        </div>
+
+                        <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
+                            <span class="avatar-title">
+                                <i class="bx bx-badge-check font-size-24"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                <div class="col-md-3">
+            <div class="card mini-stats-wid">
+                <div class="card-body">
+                    <div class="media">
+                        <div class="media-body">
+                            <p class="text-muted font-weight-medium">Total Businesses</p>
+                            <h4 class="mb-0">{{ dashboard.total_merchants|intcomma }}</h4>
+                        </div>
+
+                        <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
+                            <span class="avatar-title">
+                                <i class="bx bx-badge-check font-size-24"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title mb-4">Revenue &amp; Earnings</h4>
+                            <div id="spline_area" class="apex-charts" dir="ltr" style="height: 450px"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}
+{% block script %}
+        <script src="{% static 'assets/js/pages/bootstrap-select.min.js' %}"></script>
+        <script src="{% static 'assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+        <script>
+            const data = {{ graph|safe }}
+            document.addEventListener('DOMContentLoaded', function(){
+                document.querySelector("#spline_area").innerHTML = ''
+                var options = {
+                    colors: [
+                        '#54ca68', '#f9544b'
+                    ],
+                      series: [{
+                      name: 'Patch Revenue',
+                      data: data.revenues
+                    }, {
+                      name: 'Patch Earnings',
+                      data: data.earnings
+                    }],
+                      chart: {
+                      height: 350,
+                      type: 'area'
+                    },
+                    dataLabels: {
+                      enabled: false,
+                    },
+                    stroke: {
+                      curve: 'smooth'
+                    },
+                    xaxis: {
+                      type: 'datetime',
+                      categories: data.dates
+                    },
+                    tooltip: {
+                      x: {
+                        format: 'dd/MM/yy HH:mm'
+                      },
+                    },
+                    };
+
+                    var chart = new ApexCharts(document.querySelector("#spline_area"), options);
+                    chart.render();
+            })
+        </script>
+{% endblock %}

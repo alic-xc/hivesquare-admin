@@ -1,0 +1,123 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+{% load customer_custom_tags %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-size-18">Banks</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Banks</a></li>
+                        <li class="breadcrumb-item active">All</li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+            <div class="d-flex justify-content-between pt-3 pl-3">
+                <button type="button" data-target="#create-loan-type" data-toggle="modal" class="btn btn-primary bn">Add Bank</button>
+            </div>
+
+                <hr>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-centered table-nowrap table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col" style="width: 70px;">#</th>
+                                    <th scope="col">Code</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Country</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for bank in banks %}
+                                <tr class="staff-row-link">
+                                    <td>
+                                        {{ forloop.counter }}
+                                    </td>
+                                    <td>
+                                        <p>{{ bank.bank_code }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ bank.bank_name }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ bank.country }}</p>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'delete_bank' bank.id  %}"><i class="bx bx-trash"></i></a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center text-danger"> No results found</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            {% if pagination == True %}
+                                <p class="text-center mt-4"> Total entries: {{ transactions.count }}</p>
+                                <ul class="pagination justify-content-center mb-0">
+                                    {% if prev_page_url %}
+                                        <li class="page-item"> <a class="page-link" href="{{ prev_page_url }}" tabindex="-1"><i class="fa fa-angle-left"></i> Prev</a> </li>
+                                    {% else %}
+                                        <li class="page-item disabled"> <a class="page-link" href="#" tabindex="-1"><i class="fa fa-angle-left"></i> Prev</a> </li>
+                                    {% endif %}
+                                    {% if next_page_url %}
+                                        <li class="page-item"> <a class="page-link" href="{{ next_page_url }}">Next <i class="fa fa-angle-right"></i></a> </li>
+                                    {% else %}
+                                        <li class="page-item disabled"> <a class="page-link" href="" tabindex="-1">Next <i class="fa fa-angle-right"></i></a> </li>
+                                    {% endif %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="create-loan-type" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="myModalLabel"> Loan Type</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" >
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label> Bank Name</label>
+                            {{ form.bank_name }}
+                            <span class="text-danger">{{ form.bank_name.errors }}</span>
+                        </div>
+                        <div class="form-group">
+                            <label> Bank Code</label>
+                            {{ form.bank_code }}
+                            <span class="text-danger">{{ form.bank_code.errors }}</span>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary"> Save </button>
+                        </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+{% endblock %}

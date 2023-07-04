@@ -1,0 +1,135 @@
+{% extends 'base/base.html' %}
+{% load customer_custom_tags %}
+{% load humanize %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-size-18">Wallet</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Wallet</a></li>
+                        <li class="breadcrumb-item active">Credit</li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4>Recent actions</h4>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#creditWallet">Credit Wallet</button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Date</th>
+                                    <th>User</th>
+                                    <th>Amount</th>
+                                    <th>Prev Bal.</th>
+                                    <th>Remark</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in logs.results %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ log.date|string_to_date }}</td>
+                                        <td><a href="{% url 'customer' log.user %}">{{ log.user_details.name }}</a></td>
+                                        <td>{{ log.amount|intcomma }}</td>
+                                        <td>{{ log.prev_balance|intcomma }}</td>
+                                        <td>{{ log.remark }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center text-danger">
+                                            No results found
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            {% if pagination == True %}
+                                <p class="text-center mt-4"> Total entries: {{ logs.count }}</p>
+                                <ul class="pagination justify-content-center mb-0">
+                                    {% if prev_page_url %}
+                                        <li class="page-item"> <a class="page-link" href="{{ prev_page_url }}" tabindex="-1"><i class="fa fa-angle-left"></i> Prev</a> </li>
+                                    {% else %}
+                                        <li class="page-item disabled"> <a class="page-link" href="#" tabindex="-1"><i class="fa fa-angle-left"></i> Prev</a> </li>
+                                    {% endif %}
+                                    {% if next_page_url %}
+                                        <li class="page-item"> <a class="page-link" href="{{ next_page_url }}">Next <i class="fa fa-angle-right"></i></a> </li>
+                                    {% else %}
+                                        <li class="page-item disabled"> <a class="page-link" href="" tabindex="-1">Next <i class="fa fa-angle-right"></i></a> </li>
+                                    {% endif %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="modal fade" id="creditWallet" tabindex="-2" role="dialog"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Import data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body mt-3" style="border-top:1px solid #eee;">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="form-group col-12">
+                            <label for="" class="form-label">Amount</label>
+                            <input type="text" name="amount" placeholder="0.00" class="form-control"/>
+                        </div>
+                        <div class="form-group col-12">
+                            <label for="" class="form-label">Remark</label>
+                            <textarea name="remark" placeholder="remark" class="form-control"></textarea>
+                        </div>
+                        <div class="form-group col-12">
+                            <label class="form-label">Select User</label>
+                            <select class="form-control select2" style="width:465px" name="user">
+                                <option>Please select</option>
+                                <option value="all">all</option>
+                                {% for user in customers %}
+                                    <option value="{{ user.id }}"> {{ user.first_name }} - {{ user.last_name }} ({{ user.phone }}) </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex ">
+                        <button class="btn btn-success mx-3" >Credit</button>
+                    </div>
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+{% endblock %}
+{% block script %}
+    <script>
+        $(document).ready(function(){
+            $('.customer-row-link').click(function(){
+                window.location = $(this).data('href')
+            })
+        })
+    </script>
+{% endblock %}

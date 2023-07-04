@@ -1,0 +1,174 @@
+{% extends 'base/base.html' %}
+{% load customer_custom_tags %}
+{% load humanize %}
+{% load static %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-size-18">Staff</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Staff</a></li>
+                        <li class="breadcrumb-item active">{{ staff.details.user.username }}</li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                <div class="card overflow-hidden">
+                    <div class="{% if staff.details.user.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="text-primary p-3">
+                                    <h5 class="text-white">{{ staff.details.user.name|capfirst }}</h5>
+                                    <p class="text-white">{{ staff.details.user.username }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-0">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="avatar-md profile-user-wid">
+                                    {% if staff.avatar %}
+                                        <img src="{{ staff.avatar }}" alt="" class="img-thumbnail rounded-circle">
+                                    {% else %}
+                                        <div class="avatar-md">
+                                            <h1 class="avatar-title rounded-circle">{{ staff.details.user.name|first|upper }}</h1>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tr>
+                                        <th>Email</th>
+                                        <td>{{ staff.details.user.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Phone</th>
+                                        <td>{{ staff.phone }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Country</th>
+                                        <td>{{ staff.details.country.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Level</th>
+                                        <td>{{ staff.access }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date Joined</th>
+                                        <td>{{ staff.details.user.date_joined|string_to_date }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Last Login</th>
+                                        <td>{{ staff.details.user.last_login|string_to_date }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div id="staff-id-{{ staff.details.user.username }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title mt-0" id="myModalLabel"> Edit Staff Details</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="post" >
+                                            <div class="form-group">
+                                                <label>Phone Number</label>
+                                                <input class="form-control" name="mobile_number" type="text" value="{{ staff.phone }}" name="">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Address</label>
+                                                <textarea class="form-control" name="home_address" rows="3" cols="3">{{ staff.address }}</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Country</label>
+                                                <select name='country' class="form-control">
+                                                    {% for country in countries reversed %}
+                                                      <option {% if staff.details.country.code == country.code %} selected {% endif %} value="{{country.id}}"> {{country.name}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Level</label>
+                                                <select class="form-control" name="level">
+                                                    <option>please select</option>
+                                                    <option value="1" {% if staff.access == '1' %} selected {% endif %}>Level 1</option>
+                                                    <option value="2" {% if staff.access == '2' %} selected {% endif %}>Level 2</option>
+                                                </select>
+                                            </div>
+                                            {% csrf_token %}
+                                            <div>
+                                                <button type="submit" class="btn btn-primary">Update Info</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="card">
+                <div class="card-body">
+{#                    <h4 class="card-title ">Recent Activity Logs <a href="{% url 'activity' staff.id %}" class="btn btn-outline-primary btn-sm float-right">View all activity logs</a></h4>#}
+                    <div class="table-responsive mt-5">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Date</th>
+                                    <th>action perform</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in logs.results %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ log.date|string_to_date }}</td>
+                                        <td>{{ log.action }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="3" class="text-center text-danger">
+                                            No results found
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div> <!-- end col -->
+
+    </div>
+
+    <div class="row">
+    </div> <!-- end row -->
+
+{% endblock %}

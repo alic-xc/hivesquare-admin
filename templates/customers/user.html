@@ -1,0 +1,256 @@
+{% extends 'base/base.html' %}
+{% load customer_custom_tags %}
+{% load humanize %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-size-18">User</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">User</a></li>
+                        <li class="breadcrumb-item active">{{ customer.username }}</li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <div class="media">
+                                <div class="mr-3">
+                                    {% if customer.details.avatar %}
+                                        <img src="{{ customer.details.avatar }}" alt="" class="avatar-md rounded-circle img-thumbnail">
+                                    {% else %}
+                                        <div class="avatar-md">
+                                            <h1 class="avatar-title rounded-circle">{{ customer.first_name|first|upper }}{{ customer.last_name|first|upper }}</h1>
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+                                <div class="media-body align-self-center">
+                                    <div class="text-muted">
+                                        <p class="mb-2">Welcome to {{ customer.username }}'s  dashboard</p>
+                                        <h5 class="mb-1">{{ customer.first_name }} {{ customer.last_name }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-7 align-self-center">
+                            <div class="text-lg-center mt-4 mt-lg-0">
+                                <div class="row">
+                                    <div class="col-5">
+                                        <div>
+                                            <p class="text-muted text-truncate mb-2">Email</p>
+                                            <h5 class="mb-0">{{ customer.email }}</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div>
+                                            <p class="text-muted text-truncate mb-2">Mobile Number</p>
+                                            <h5 class="mb-0">{{ customer.phone|default_if_none:"N/A" }}</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div>
+                                            {% if customer.details.user_type == 'individual' %}
+                                                {% if customer.details.entity_details.is_active %}
+                                                    <a href="{% url 'customer_control' customer.details.entity_details.id 'account' 'deactivate' request.GET.account_no %}?username={{ customer.username }}" class="btn btn-danger">Block</a>
+                                                {% else %}
+                                                    <a href="{% url 'customer_control' customer.details.entity_details.id 'account' 'activate' request.GET.account_no %}?username={{ customer.username }}" class="btn btn-success">Activate</a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end row -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="row">
+                {% if customer.details.user_type == 'individual' %}
+                    <div class="col-sm-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="avatar-xs mr-3">
+                                        <span class="avatar-title rounded-circle bg-soft-primary text-primary font-size-18">
+                                            <i class="bx bx-copy-alt"></i>
+                                        </span>
+                                    </div>
+                                    <h5 class="font-size-14 mb-0">Total Successful Transactions</h5>
+                                </div>
+                                <div class="text-muted mt-4">
+                                    <h4>{{ total_transactions.success_count }}</h4>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="avatar-xs mr-3">
+                                        <span class="avatar-title rounded-circle bg-soft-primary text-primary font-size-18">
+                                            <i class="bx bx-copy-alt"></i>
+                                        </span>
+                                    </div>
+                                    <h5 class="font-size-14 mb-0">Total Pending Transaactions</h5>
+                                </div>
+                                <div class="text-muted mt-4">
+                                    <h4>{{ total_transactions.pending_count }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="avatar-xs mr-3">
+                                        <span class="avatar-title rounded-circle bg-soft-primary text-primary font-size-18">
+                                            <i class="bx bx-copy-alt"></i>
+                                        </span>
+                                    </div>
+                                    <h5 class="font-size-14 mb-0">Total Currency</h5>
+                                </div>
+                                <div class="text-muted mt-4">
+                                    <h4>{{ customer_widget.currency_count }}</h4>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">User Details</h4>
+                    <hr>
+                    <div class="row">
+                        <div class="{% if customer.details.user_type == 'individual' %}col-md-4{% else %}col-md-6{% endif %}">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tr>
+                                        <th>First Name</th>
+                                        <td>{{ customer.first_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Last Name</th>
+                                        <td>{{ customer.last_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email</th>
+                                        <td>{{ customer.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Phone</th>
+                                        <td>{{ customer.details.phone }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Country</th>
+                                        <td>{{ customer.details.entity_details.country.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Language</th>
+                                        <td>{{ customer.details.user_settings.language }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Address</th>
+                                        <td>{{ customer.details.address  }}</td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+                        <div class="{% if customer.details.user_type == 'individual' %}col-md-4{% else %}col-md-6{% endif %}">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th>Security Question Set</th>
+                                            <td>{% if customer.details.user_settings.sq_set %} <i class="fa fa-check-circle text-success"></i> {% else %}  <i class="fa fa-times-circle text-danger"></i> {% endif %}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Pin Set</th>
+                                            <td>{% if customer.details.user_settings.pin_set %} <i class="fa fa-check-circle text-success"></i> {% else %}  <i class="fa fa-times-circle text-danger"></i> {% endif %}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>One Time Password 2FA Setup</th>
+                                            <td>{% if customer.details.user_settings.otp_2fa %} <i class="fa fa-check-circle text-success"></i> {% else %}  <i class="fa fa-times-circle text-danger"></i> {% endif %}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Security Question 2FA Setup </th>
+                                            <td>{% if customer.details.user_settings.sq_2fa %} <i class="fa fa-check-circle text-success"></i> {% else %}  <i class="fa fa-times-circle text-danger"></i> {% endif %}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Date Joined</th>
+                                            <td>{{ customer.date_joined|string_to_date }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Last Login Date</th>
+                                            <td>{{ customer.last_login|string_to_date }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                        {% if customer.details.user_type == 'individual' %}
+                            <div class="col-md-4">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            {% for currency, value in customer_widget.currencies.items %}
+                                                <tr>
+                                                    <th><span class="currency-flag currency-flag-{{currency|lower}} border-radius mr-1"></span>{{ currency }}</th>
+                                                    <td>{{ value|intcomma }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </table>
+                                    </div>
+
+                            </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if customer.details.user_type == 'individual' %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title ">Recent Transactions <a href="{% url 'user_transactions' request.GET.account_no  %}" class="btn btn-outline-primary btn-sm float-right">View all transactions</a></h4>
+                    <div class="table-responsive mt-5">
+                        {% include 'base/transaction_base.html' %}
+                    </div>
+
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div> <!-- end row -->
+
+    {% endif %}
+{% endblock %}

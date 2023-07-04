@@ -1,0 +1,162 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+{% load customer_custom_tags %}
+{% load static %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-size-18">Base Fare</h4>
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Category</a></li>
+                        <li class="breadcrumb-item active">All</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+            <div class="d-flex justify-content-between pt-3 pl-3">
+                <button type="button" data-target="#create-basefare" data-toggle="modal" class="btn btn-primary bn">Create</button>
+            </div>
+                <hr>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-centered table-nowrap table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col" style="width: 70px;">#</th>
+                                    <th scope="col">Distance</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Min Cost</th>
+                                    <th scope="col">Max Packages</th>
+                                    <th scope="col">Surge</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for basefare in basefares %}
+                                <tr class="staff-row-link">
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ basefare.fare_distance|intcomma }}</td>
+                                    <td>{{ basefare.fare_time|intcomma }}</td>
+                                    <td>{{ basefare.min_cost|intcomma }}</td>
+                                    <td>{{ basefare.max_package }}</td>
+                                    <td>{{ basefare.surge }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-info p-2" data-toggle="modal" data-target="#updateCategory{{ basefare.id }}"><i class="fa fa-pen fa-1x"></i></a>
+                                        <div class="modal fade" id="updateCategory{{ basefare.id }}" tabindex="-1" aria-hidden="true">
+                                            <div class="modal-dialog modal-sm">
+                                                <div class="modal-content">
+                                                    <form method="post" enctype="multipart/form-data">
+                                                        {% csrf_token %}
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Update Base Fare</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="form-row">
+                                                                <div class="form-group col-12">
+                                                                    <label>Distance Per KM</label>
+                                                                    <input type="text" value="{{ basefare.fare_distance }}" name="fare_distance" class="form-control" placeholder="Amount Per KM" />
+                                                                    <span class="text-danger">{{ form.fare_distance.errors }}</span>
+                                                                </div>
+                                                                <div class="form-group col-12">
+                                                                    <label>Time Per Min</label>
+                                                                    <input type="text" value="{{ basefare.fare_time }}" name="fare_time" class="form-control" placeholder="Amount Per Minutes" />
+                                                                    <span class="text-danger">{{ form.fare_time.errors }}</span>
+                                                                </div>
+                                                                <div class="form-group col-12">
+                                                                    <label>Min Cost</label>
+                                                                    <input type="text" value="{{ basefare.min_cost }}" name="min_cost" class="form-control" placeholder="Min Cost" />
+                                                                    <span class="text-danger">{{ form.min_cost.errors }}</span>
+                                                                </div>
+                                                                <div class="form-group col-12">
+                                                                    <label>Max Packages</label>
+                                                                    <input type="number" value="{{ basefare.max_package }}" name="max_packages" class="form-control" placeholder="Maximum Packages" />
+                                                                    <span class="text-danger">{{ form.max_packages.errors }}</span>
+                                                                </div>
+                                                                <div class="form-group col-12">
+                                                                    <label>Surge</label>
+                                                                    <input type="number" value="{{ basefare.surge }}" name="surge" class="form-control" placeholder="Surge" />
+                                                                    <span class="text-danger">{{ form.surge.errors }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="hidden" name="id" value="{{ basefare.id }}" />
+                                                            <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center text-danger"> No results found</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="create-basefare" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="myModalLabel"> Category </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" enctype="multipart/form-data" method="post" id="loanForm" >
+                        {% csrf_token %}
+                        <div class="form-row">
+                                <div class="form-group col-12">
+                                    <label>Distance Per KM</label>
+                                    <input type="text" value="" name="fare_distance" class="form-control" placeholder="Amount Per KM" />
+                                    <span class="text-danger">{{ form.fare_distance.errors }}</span>
+                                </div>
+                                <div class="form-group col-12">
+                                    <label>Time Per Min</label>
+                                    <input type="text" value="" name="fare_time" class="form-control" placeholder="Amount Per Minutes" />
+                                    <span class="text-danger">{{ form.fare_time.errors }}</span>
+                                </div>
+                                <div class="form-group col-12">
+                                    <label>Min Cost</label>
+                                    <input type="text" value="" name="min_cost" class="form-control" placeholder="Min Cost" />
+                                    <span class="text-danger">{{ form.min_cost.errors }}</span>
+                                </div>
+                                <div class="form-group col-12">
+                                    <label>Max Packages</label>
+                                    <input type="number" value="" name="max_packages" class="form-control" placeholder="Maximum Packages" />
+                                    <span class="text-danger">{{ form.max_packages.errors }}</span>
+                                </div>
+                                <div class="form-group col-12">
+                                    <label>Surge</label>
+                                    <input type="number" value="" name="surge" class="form-control" placeholder="Surge" />
+                                    <span class="text-danger">{{ form.surge.errors }}</span>
+                                </div>
+                                <div class="form-group col-12">
+                                                                                                <button type="submit" class="btn btn-primary btn-sm">Save</button>
+
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+{% endblock %}
+

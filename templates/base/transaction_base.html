@@ -1,0 +1,79 @@
+{% load humanize %}
+{% load customer_custom_tags %}
+<table class="table table-hover datatable nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Ref</th>
+            <th>User</th>
+            <th>Amount</th>
+            <th>Payment Type</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transaction in transactions.results %}
+            <tr>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.ref }}</td>
+                <td>
+                    {% if transaction.user_type.type == 'user' %}
+                        <a href="{% url 'customer' transaction.user %}">view user</a>
+                    {% else %}
+                        <a href="{% url 'driver' transaction.user_type.id %}">view rider</a>
+                    {% endif %}
+                </td>
+                <td>{{ transaction.amount|intcomma }}</td>
+                <td>{{ transaction.payment_type }}</td>
+                <td>
+                    {% if transaction.status == 'pending' %}
+                     <span class="badge badge-light">
+                 {% elif transaction.status == 'accepted'  %}
+                     <span class="badge badge-warning" style="background: orange;">
+                 {% elif transaction.status == 'arrived'  %}
+                     <span class="badge badge-primary col-white">
+                 {% elif transaction.status == 'in-transit'  %}
+                     <span class="badge badge-info col-white" >
+                 {% elif transaction.status == 'returning'  %}
+                     <span class="badge badge-primary" style="background:purple;">
+                 {% elif transaction.status == 'completed'  %}
+                     <span class="badge badge-success col-white">
+                 {% else %}
+                    <span class="badge badge-danger">
+                 {% endif %}
+                    {{ transaction.status }}
+                 </span>
+                </td>
+
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="9" class="text-center text-danger">No record found.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="9">
+                <ul class="pagination justify-content-center mb-0">
+                    {% if pagination.prev %}
+                        <li class="page-item"><a href="?{{ pagination.prev }}" class="page-link"
+                                                 tabindex="-1"><i class="fa fa-angle-left"></i> Prev</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1"><i
+                                class="fa fa-angle-left"></i> Prev</a></li>
+                    {% endif %}
+                    {% if pagination.next %}
+                        <li class="page-item"><a href="?{{ pagination.next }}" class="page-link">Next <i
+                                class="fa fa-angle-right"></i></a></li>
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="" tabindex="-1">Next
+                            <i class="fa fa-angle-right"></i></a></li>
+                    {% endif %}
+                </ul>
+            </td>
+        </tr>
+    </tfoot>
+
+</table>

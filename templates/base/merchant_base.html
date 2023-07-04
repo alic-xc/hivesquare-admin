@@ -1,0 +1,37 @@
+{% load humanize %}
+{% load customer_custom_tags %}
+<table class="table table-hover datatable nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>KYC Completed</th>
+            <th>Date Joined</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for merchant in merchants %}
+            <tr>
+                <td>{{ merchant.name }}</td>
+                <td>{{ merchant.admin.email }}</td>
+                <td>{{ merchant.admin.phone }}</td>
+{#                <td>{% if merchant.status == 'pending'  %}<span class="float-right badge badge-pill  badge-info ">{{ merchant.status }}</span> {% else %} <span class="float-right badge badge-pill  badge-success ">{{ merchant.status }}</span>{% endif %}</td>#}
+                <td>{% if merchant.is_verified  %}<span class=" badge badge-pill  badge-info ">{{ merchant.is_verified }}</span>{% else %}<span class=" badge badge-pill  badge-danger ">{{ merchant.is_verified }}</span>{% endif %}</td>
+                <td>{{ merchant.date_created }}</td>
+                <td class="text-center">
+                    <div class="btn-group mr-2" role="group" aria-label="Second group">
+                        <a href="{% if merchant.id %}{% url 'merchant' merchant.id %}{% else %}#{% endif %}" class="btn btn-sm btn-success" data-toggle="tooltip" data-placement="top" title="View merchant" data-original-title="View merchant" data-action-type="request" data-action="approve" ><i class="fa fa-eye"></i></a>
+                    </div>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="9" class="text-center text-danger">No record found.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+

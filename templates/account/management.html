@@ -1,0 +1,192 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+{% load customer_custom_tags %}
+{% load static %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-size-18">Management Fee</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Management</a></li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Fee</a></li>
+                        <li class="breadcrumb-item active">All</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="d-flex justify-content-between pt-3 pl-3">
+                    <button type="button" data-target="#create-investment-type" data-toggle="modal"
+                            class="btn btn-primary bn">Add Management Fee
+                    </button>
+                </div>
+                <hr>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-centered table-nowrap table-hover">
+                            <thead class="thead-light">
+                            <tr>
+                                <th scope="col" style="width: 70px;">#</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Amount Capped</th>
+                                <th scope="col">Percentage</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Is Active</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for management in managements %}
+                                <tr class="staff-row-link">
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ management.title }}</td>
+                                    <td>&#8358;{{ management.amount_capped|intcomma }}</td>
+                                    <td>{{ management.percentage }}</td>
+                                    <td>{{ management.management_type }}</td>
+                                    <td>{{ management.is_active }}</td>
+                                    <td>{{ management.date_created }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-info p-2" data-toggle="modal"
+                                           data-target="#management{{ management.id }}"><i class="fa fa-pen fa-1x"></i></a>
+                                        <div class="modal fade" id="management{{ management.id }}" tabindex="-1"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <form method="post" enctype="multipart/form-data">
+                                                        {% csrf_token %}
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Management
+                                                                Fee</h5>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                <span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="form-row">
+                                                                <div class="form-group col-6">
+                                                                    <label>Title</label>
+                                                                    <input type="text" value="{{ management.title }}"
+                                                                           name="title" class="form-control"
+                                                                           placeholder="Title"/>
+                                                                    <span class="text-danger">{{ form.title.errors }}</span>
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <label>Amount Capped</label>
+                                                                    <input type="text" value="{{ management.amount_capped }}"
+                                                                           name="amount_capped" class="form-control amount-formatter"
+                                                                           placeholder="Amount Capped"/>
+                                                                    <span class="text-danger">{{ form.max_amount.errors }}</span>
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <label>Percentage</label>
+                                                                    <input type="number"
+                                                                           value="{{ management.percentage }}"
+                                                                           name="percentage" class="form-control"
+                                                                           placeholder="Percentage"/>
+                                                                    <span class="text-danger">{{ form.percentage.errors }}</span>
+                                                                </div>
+                                                                <div class="form-group col-6">
+                                                                    <label> Type</label>
+                                                                    <select name="type" class="form-control">
+                                                                        <option value="">please select</option>
+                                                                        <option value="loan"
+                                                                                {% if management.management_type == 'loan' %}selected{% endif %}>
+                                                                            Loan
+                                                                        </option>
+                                                                    <option value="peer2peer"
+                                                                                {% if management.management_type == 'peer2peer' %}selected{% endif %}>
+                                                                            Peer2peer
+                                                                        </option><option value="investment"
+                                                                                {% if management.management_type == 'investment' %}selected{% endif %}>
+                                                                            Investment
+                                                                        </option>
+                                                                    </select>
+                                                                    <span class="text-danger">{{ form.type.errors }}</span>
+                                                                </div>
+                                                            <div class="form-group col-12">
+                                                                <input type="checkbox" name="is_active" {% if management.is_active %}selected{% endif %} />
+                                                                <label>Is Active</label>
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="hidden" name="id" value="{{ management.id }}"/>
+                                                            <button type="submit" class="btn btn-primary btn-sm">Save
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center text-danger"> No results found</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="create-investment-type" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="myModalLabel"> Investment Grade </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" enctype="multipart/form-data" method="post" id="loanForm">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group col-6">
+                                <label>Title</label>
+                                <input type="text" name="title" class="form-control"
+                                       placeholder="Title"/>
+                                <span class="text-danger">{{ form.title.errors }}</span>
+                            </div>
+                            <div class="form-group col-6">
+                                <label>Amount Capped</label>
+                                <input type="text"  name="amount_capped"
+                                       class="form-control amount-formatter" placeholder="Amount Capped"/>
+                                <span class="text-danger">{{ form.amount_capped.errors }}</span>
+                            </div>
+
+                            <div class="form-group col-6">
+                                <label>Percentage</label>
+                                <input type="number" name="percentage"
+                                       class="form-control" placeholder="Percentage"/>
+                                <span class="text-danger">{{ form.percentage.errors }}</span>
+                            </div>
+
+                            <div class="form-group col-12">
+                                <input type="checkbox" name="is_active" />
+                                <label>Is Active</label>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary"> Create </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+{% endblock %}

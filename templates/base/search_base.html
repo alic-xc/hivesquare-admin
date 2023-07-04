@@ -1,0 +1,306 @@
+{% load humanize %}
+{% load customer_custom_tags %}
+{% if search %}
+    <h4 class="my-4">You searched for: <span class="text-success">{{ search_value }}</span></h4>
+    {% if search_type == 'user' %}
+        <div class="table-responsive">
+
+    <table class="table table-centered table-nowrap table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col" style="width: 70px;">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Phone Number</th>
+                <th scope="col">Status</th>
+                <th scope="col">Date Created</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for customer in search %}
+            <tr class="customer-row-link" style="cursor:pointer" data-href="{% url 'customer' customer.id %}">
+                <td>
+                    <div class="avatar-xs">
+
+                        <span class="avatar-title rounded-circle">
+                            {{ customer.first_name|first|upper }}
+                        </span>
+                    </div>
+                </td>
+                <td>{{ customer.first_name|capfirst }} {{ customer.last_name|capfirst }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.phone }}</td>
+                                    <td>{% if not customer.access %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
+                <td>{{ customer.date_joined }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="8" class="text-center text-danger"> No customer available</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+    {% endif %}
+    {% if search_type == 'merchant' %}
+        <div class="table-responsive">
+            <table class="table table-centered table-nowrap table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Date Joined</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+                <tbody>
+        {% for merchant in search %}
+            <tr>
+                <td>{{ merchant.name }}</td>
+                <td>{{ merchant.admin.email }}</td>
+                <td>{{ merchant.admin.phone }}</td>
+                <td>{{ merchant.date_created }}</td>
+                <td class="text-center">
+                    <div class="btn-group mr-2" role="group" aria-label="Second group">
+                        <a href="{% if merchant.id %}{% url 'merchant' merchant.id %}{% else %}#{% endif %}" class="btn btn-sm btn-success" data-toggle="tooltip" data-placement="top" title="View fleet" data-original-title="View fleet" data-action-type="request" data-action="approve" ><i class="fa fa-eye"></i></a>
+                    </div>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="9" class="text-center text-danger">No record found.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+
+    </table>
+</div>
+    {% endif %}
+    {% if search_type == 'rider' %}
+        {{ search }}
+        <div class="table-responsive">
+    <table class="table table-centered table-nowrap table-hover">
+        <thead class="thead-light">
+            <tr>
+                <tr>
+                    <th>Date Joined</th>
+                    <th>Rider ID</th>
+                    <th>Full Name</th>
+                    <th>Phone</th>
+                    <th>Action</th>
+                </tr>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for driver in search %}
+            <tr>
+                <td>{{ driver.date_created }}</td>
+                <td>{{ driver.rider_id }}</td>
+                <td>{{ driver.user.name }}</td>
+                <td>{{ driver.user.phone }}</td>
+                <td class="text-center">
+                    <div class="btn-group mr-2" role="group" aria-label="Second group">
+                        <a href="{% url 'driver' driver.id %}" class="btn btn-sm btn-info"  data-toggle="tooltip" data-placement="top" title="View Rider" data-original-title="View Rider"><i class="fa fa-eye"></i></a>
+                    </div>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="8" class="text-center text-danger"> No workspaces available</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+    {% endif %}
+    {% if search_type == 'delivery' %}
+        <div class="table-responsive">
+    <table class="table table-centered table-nowrap table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th>Date</th>
+                <th>Track ID</th>
+                <th>User</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Rider</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for service in search %}
+            <tr>
+                <td>{{ service.created_date }}</td>
+                <td>{{ service.track_id }}</td>
+                <td>{% if service.user.id %}<a href="{% url 'customer' service.user.id %}" >{{ service.user.name }}</a>{% else %}{{ service.user.name }}{% endif %}</td>
+                <td>{{ service.delivery_category.name }}</td>
+                <td>
+                    {% if service.status == 'pending' %}
+                     <span class="badge badge-light">
+                 {% elif service.status == 'accepted'  %}
+                     <span class="badge badge-warning" style="background: orange;">
+                 {% elif service.status == 'arrived'  %}
+                     <span class="badge badge-primary col-white">
+                 {% elif service.status == 'in-transit'  %}
+                     <span class="badge badge-info col-white" >
+                 {% elif service.status == 'returning'  %}
+                     <span class="badge badge-primary" style="background:purple;">
+                 {% elif service.status == 'completed'  %}
+                     <span class="badge badge-success col-white">
+                 {% else %}
+                    <span class="badge badge-danger">
+                 {% endif %}
+                    {{ service.status }}
+                 </span>
+                </td>
+                <td>{{ service.payment_mode }}</td>
+                <td> {% if service.rider %} <a href="{% url 'driver' service.rider.id %}" class="text-info"> {{ service.rider.name }} </a> {% else %} - {% endif %}</td>
+                <td class="text-center">
+                    <div class="btn-group mr-2" role="group" aria-label="Second group">
+                        <a href="{% url 'service' service.id %}" class="btn btn-sm btn-success" data-toggle="tooltip" data-placement="top" data-original-title="View service" ><i class="fa fa-eye"></i></a>
+
+                    </div>
+                </td>
+            </tr>
+
+        {% empty %}
+            <tr>
+                <td colspan="8" class="text-center text-danger"> No workspaces available</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+    {% endif %}
+    {% if search_type == 'transaction' %}
+        <div class="table-responsive">
+    <table class="table table-centered table-nowrap table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th>Date</th>
+                <th>Ref</th>
+                <th>User</th>
+                <th>Amount</th>
+                <th>Payment Type</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for transaction in search %}
+            <tr>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.ref }}</td>
+                <td>
+                    {% if transaction.user_type.type == 'user' %}
+                        <a href="{% url 'customer' transaction.user %}">view user</a>
+                    {% else %}
+                        <a href="{% url 'driver' transaction.user_type.id %}">view rider</a>
+                    {% endif %}
+                </td>
+                <td>{{ transaction.amount|intcomma }}</td>
+                <td>{{ transaction.payment_type }}</td>
+                <td>
+                    {% if transaction.status == 'pending' %}
+                     <span class="badge badge-light">
+                 {% elif transaction.status == 'accepted'  %}
+                     <span class="badge badge-warning" style="background: orange;">
+                 {% elif transaction.status == 'arrived'  %}
+                     <span class="badge badge-primary col-white">
+                 {% elif transaction.status == 'in-transit'  %}
+                     <span class="badge badge-info col-white" >
+                 {% elif transaction.status == 'returning'  %}
+                     <span class="badge badge-primary" style="background:purple;">
+                 {% elif transaction.status == 'completed'  %}
+                     <span class="badge badge-success col-white">
+                 {% else %}
+                    <span class="badge badge-danger">
+                 {% endif %}
+                    {{ transaction.status }}
+                 </span>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="8" class="text-center text-danger"> No transaction available</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+    {% endif %}
+    {% if search_type == 'payment' %}
+        <div class="table-responsive mt-5">
+                    <table class="table table-centered table-nowrap table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Amount</th>
+                <th scope="col">Earnings</th>
+                <th scope="col">Payment Mode</th>
+                <th scope="col">Payment Date</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for booking in search %}
+            <tr class="customer-row-link" style="cursor:pointer" data-href="{% url 'booking' booking.booking %}">
+                <td>{{ booking.currency }} {{ booking.amount|intcomma }}</td>
+                <td>{{ booking.currency }} {{ booking.earnings|intcomma }}</td>
+                <td>{{ booking.payment_method }}</td>
+                <td>{{ booking.payment_date|string_to_date }}</td>
+                <td><a href="{% url 'booking_items' booking.booking  %}">view booking <i class="fa fa-eye"></i></a></td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="8" class="text-center text-danger"> No bookings available</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+                </div>
+    {% endif %}
+    {% if search_type == 'advert_payment' %}
+        <div class="table-responsive">
+    <table class="table table-centered table-nowrap table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Listing</th>
+                <th scope="col">Mode</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Status</th>
+                <th scope="col">Completed</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for premium_payment in search %}
+            <tr>
+                <td>{{ premium_payment.premium_details.listing }}</td>
+                <td>{{ premium_payment.premium_mode }}</td>
+                <td>{{ premium_payment.premium_details.start_date|string_to_date|string_to_date_object }}</td>
+                <td>{{ premium_payment.premium_details.end_date|string_to_date|string_to_date_object }}</td>
+                <td>{% if premium_payment.premium_details.status == 'pending' %}<span class="badge badge-warning">{% elif premium_payment.premium_details.status == 'active' %}<span class="badge badge-success">{% else %}<span class="badge badge-terminated">{% endif %} {{premium_payment.premium_details.status}} </span> </td>
+                <td>{% if premium_payment.is_completed %}<span class="badge badge-warning"> not completed {% else %}<span class="badge badge-success"> completed {% endif %}</span> </td>
+                <td><a href="{% url 'premium_payment_details' premium_payment.id  %}"><i class="fa fa-eye"></i></a></td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="8" class="text-center text-danger"> No bookings available</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+    {% endif %}
+{% else %}
+    <div>
+        <b class="text-muted text-center">No search result</b>
+    </div>
+{% endif %}

@@ -1,0 +1,142 @@
+{% load humanize %}
+{% load customer_custom_tags %}
+<table class="table table-hover datatable nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+    <thead>
+        <tr>
+            <th>
+                #
+            </th>
+            <th>Date</th>
+            <th>Track ID</th>
+            <th>User</th>
+            <th>Address</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for service in services.results %}
+            <tr>
+                <td><input type="checkbox" class="form-services" value="{{ service.id }}" ></td>
+                <td>{{ service.created_date|string_to_date }}</td>
+                <td>{{ service.track_id }}</td>
+                <td>{% if service.user.id %}<a href="{% url 'customer' service.user.id %}" >{{ service.user.name }}</a>{% else %}{{ service.user.name }}{% endif %}</td>
+                <td>
+                    <strong class="text-danger">({{ service.destination_address }})</strong>
+                    <span style="display: block">-------------------------------------</span>
+                    <strong class="text-success">({{ service.pick_up_address }})</strong>
+                </td>
+                <td>{{ service.service_category.name }}</td>
+                <td>
+                    {% if service.status == 'pending' %}
+                     <span class="badge badge-light">
+                 {% elif service.status == 'accepted'  %}
+                     <span class="badge badge-warning" style="background: orange;">
+                 {% elif service.status == 'arrived'  %}
+                     <span class="badge badge-primary col-white">
+                 {% elif service.status == 'in-transit'  %}
+                     <span class="badge badge-info col-white" >
+                 {% elif service.status == 'returning'  %}
+                     <span class="badge badge-primary" style="background:purple;">
+                 {% elif service.status == 'completed'  %}
+                     <span class="badge badge-success col-white">
+                 {% else %}
+                    <span class="badge badge-danger">
+                 {% endif %}
+                    {{ service.status }}
+                 </span>
+                </td>
+                <td class="text-center">
+                    <div class="btn-group mr-2" role="group" aria-label="Second group">
+                        <a href="{% url 'service' service.id %}" class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="View service" data-original-title="View service" data-action-type="request" data-action="approve" ><i class="fa fa-eye"></i></a>
+                        <button id="modal" class="btn btn-sm btn-success" data-toggle="modal" data-target="#assignRider" data-service="{{ service.id }}" data-schedule="{{ service.schedule_pick_time }}" data-placement="top" title="Assign service" data-original-title="Assign service"><i class="fa fa-cogs"></i></button>
+                        {% if service.status != 'cancelled' %}
+                            <button class=" confirm btn btn-danger btn-sm text-white mr-2" data-original-title="Cancel service" data-action-type="request" data-action="cancel" data-href="{% url 'service_action' service.id %}?redirect_to=awaiting_services"><i class="fa fa-times"></i></button>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="9" class="text-center text-danger">No record found.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="9">
+                <ul class="pagination justify-content-center mb-0">
+                    {% if pagination.prev %}
+                        <li class="page-item"><a href="?{{ pagination.prev }}" class="page-link"
+                                                 tabindex="-1"><i class="fa fa-angle-left"></i> Prev</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1"><i
+                                class="fa fa-angle-left"></i> Prev</a></li>
+                    {% endif %}
+                    {% if pagination.next %}
+                        <li class="page-item"><a href="?{{ pagination.next }}" class="page-link">Next <i
+                                class="fa fa-angle-right"></i></a></li>
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="" tabindex="-1">Next
+                            <i class="fa fa-angle-right"></i></a></li>
+                    {% endif %}
+                </ul>
+            </td>
+        </tr>
+    </tfoot>
+
+</table>
+<div class="modal fade" id="assignRider" tabindex="-2" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Action Pane</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body mt-3">
+                <form method="post" action="{% url 'assign_service' %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Driver</label><br/>
+                                <select class="form-control select2" name="driver" style="width: 100%;">
+                                    <option value="">Please select</option>
+                                    {% for driver in drivers.data %}
+                                        <option value="{{ driver.id }}"> {{ driver.user.name }} *** packages :
+                                            {{ driver.pending_package }}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="hidden" name="service" id="serviceInput" value=""/>
+                            </div>
+                            <div class="form-group col-12">
+                                <label class="form-label">Select User</label>
+                                <select class="form-control select2" name="user" style="width: 100%;">
+                                    <option value="">Please select</option>
+                                    {% for user in customers %}
+                                        <option value="{{ user.id }}"> {{ user.first_name }} - {{ user.last_name }} ({{ user.phone }}) </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="width: 100%;">
+                                    <label>Pickup Date</label>
+                                    <input type="datetime-local" id="pickup-date" name="pickup_date" class="form-control" min="{{ start_date }}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-primary"> Assign </button>
+                    </div>
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>

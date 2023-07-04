@@ -1,0 +1,58 @@
+{% extends 'base/base.html' %}
+{% load customer_custom_tags %}
+{% load humanize %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-size-18">Riders</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Riders</a></li>
+                        <li class="breadcrumb-item active">All</li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+            <div class="col-xl-12">
+            <div class="card" style="background: #f1f1f1;">
+                <div class="card-body">
+                    <form>
+                        <div class="form-row">
+                            <div class="col-5 form-group">
+                                <label> Search </label>
+                                <input class="form-control"  value="{{ search_value }}" type="text" placeholder="Search by email or phone or rider id" name="search_value"/>
+                            </div>
+                            <div class="col-1 form-group">
+                                <label>&nbsp;</label>
+                                <br/>
+                                <button class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                            </div>
+                            <input type="hidden" value="rider" name="search_type">
+                        </div>
+                    </form>
+                {% include 'base/search_base.html' %}
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive mt-5">
+                        {% include 'base/driver_base.html' %}
+                    </div>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div> <!-- end row -->
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}

@@ -6,11 +6,11 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-flex align-items-center justify-content-between">
-                <h4 class="mb-0 font-size-18">Customers</h4>
+                <h4 class="mb-0 font-size-18">Products</h4>
 
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Customers</a></li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Products</a></li>
                         <li class="breadcrumb-item active">All</li>
                     </ol>
                 </div>
@@ -21,13 +21,13 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card mini-stats-wid">
                         <div class="card-body">
                             <div class="media">
                                 <div class="media-body">
-                                    <p class="text-muted font-weight-medium">Total Users</p>
-                                    <h4 class="mb-0">{{ analytics.total_users|intcomma }}</h4>
+                                    <p class="text-muted font-weight-medium">Total Products</p>
+                                    <h4 class="mb-0">{{ analytics.total_products|intcomma }}</h4>
                                 </div>
 
                                 <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
@@ -39,13 +39,13 @@
                         </div>
                     </div>
                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                     <div class="card mini-stats-wid">
                         <div class="card-body">
                             <div class="media">
                                 <div class="media-body">
-                                    <p class="text-muted font-weight-medium">Total Registered  User</p>
-                                    <h4 class="mb-0">{{ analytics.total_registered_users|intcomma }}</h4>
+                                    <p class="text-muted font-weight-medium">Total Active Products</p>
+                                    <h4 class="mb-0">{{ analytics.total_active_products|intcomma }}</h4>
                                 </div>
 
                                 <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
@@ -58,36 +58,18 @@
                     </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card mini-stats-wid">
                         <div class="card-body">
                             <div class="media">
                                 <div class="media-body">
-                                    <p class="text-muted font-weight-medium">Total Active  Users</p>
-                                    <h4 class="mb-0">{{ analytics.total_active_users|intcomma }}</h4>
+                                    <p class="text-muted font-weight-medium">Total Inactive Products</p>
+                                    <h4 class="mb-0">{{ analytics.total_inactive_products|intcomma }}</h4>
                                 </div>
 
                                 <div class="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
                                     <span class="avatar-title">
                                         <i class="bx bx-copy-alt font-size-24"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card mini-stats-wid">
-                        <div class="card-body">
-                            <div class="media">
-                                <div class="media-body">
-                                    <p class="text-muted font-weight-medium">Total Inactive Users</p>
-                                    <h4 class="mb-0">{{ analytics.total_inactive_users|intcomma }}</h4>
-                                </div>
-
-                                <div class="avatar-sm rounded-circle bg-primary align-self-center mini-stat-icon">
-                                    <span class="avatar-title rounded-circle bg-primary">
-                                        <i class="bx bx-purchase-tag-alt font-size-24"></i>
                                     </span>
                                 </div>
                             </div>
@@ -105,7 +87,7 @@
                         <div class="form-row">
                             <div class="col-5 form-group">
                                 <label> Search </label>
-                                <input class="form-control"  value="{{ search_value }}" type="text" placeholder="Search by email or phone" name="search_value"/>
+                                <input class="form-control"  value="{{ search_value }}" type="text" placeholder="Search by title" name="search_value"/>
                             </div>
                             <div class="col-1 form-group">
                                 <label>&nbsp;</label>
@@ -129,37 +111,36 @@
                         <table class="table table-centered table-nowrap table-hover">
                             <thead class="thead-light">
                                 <tr>
-                                    <th scope="col" style="width: 70px;">#</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Phone Number</th>
-                                    <th scope="col">KYC Status</th>
-                                    <th scope="col">Account Status</th>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Business</th>
+                                    <th scope="col">Cost Price</th>
+                                    <th scope="col">Selling Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Is Active</th>
+                                    <th scope="col">Is Published</th>
                                     <th scope="col">Date Created</th>
                                 </tr>
                             </thead>
                             <tbody>
 
-                            {% for customer in customers.results %}
-                                <tr class="customer-row-link" style="cursor:pointer" data-href="{% url 'customer' customer.id %}">
+                            {% for product in products.results %}
+                                <tr class="customer-row-link" style="cursor:pointer" data-href="{% url 'product' product.id %}">
                                     <td>
-                                        <div class="avatar-xs">
-
-                                            <span class="avatar-title rounded-circle">
-                                                {{ customer.first_name|first|upper }}
-                                            </span>
-                                        </div>
+                                        {{ product.name }}
                                     </td>
-                                    <td>{{ customer.first_name|capfirst }} {{ customer.last_name|capfirst }}</td>
-                                    <td>{{ customer.email }}</td>
-                                    <td>{{ customer.phone }}</td>
-                                    <td>{% if not customer.access %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
-                                    <td>{% if not customer.is_active %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
-                                    <td>{{ customer.date_joined }}</td>
+                                    <td>{{ product.business_name }}</td>
+                                    <td>{{ product.cost_price|intcomma }}</td>
+                                    <td>{{ product.selling_price|intcomma }}</td>
+                                    <td>{{ product.quantity|intcomma }}</td>
+                                    <td>{{ product.sub_category_name }}</td>
+                                    <td>{{ product.is_active }}</td>
+                                    <td>{{ product.is_publish }}</td>
+                                    <td>{{ product.date_created }}</td>
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="8" class="text-center text-danger"> No customer available</td>
+                                    <td colspan="8" class="text-center text-danger"> No products available</td>
                                 </tr>
                             {% endfor %}
                             </tbody>

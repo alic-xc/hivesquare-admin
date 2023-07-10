@@ -6,19 +6,19 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-flex align-items-center justify-content-between">
-                <h4 class="mb-0 font-size-18">Customer</h4>
+                <h4 class="mb-0 font-size-18">Product</h4>
 
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Customer</a></li>
-                        <li class="breadcrumb-item active">{{ customer.first_name|capfirst }} {{ customer.last_name|capfirst }}</li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Product</a></li>
+                        <li class="breadcrumb-item active">{{ product.id }}</li>
                     </ol>
                 </div>
 
             </div>
         </div>
     </div>
-    {% if customer %}
+    {% if product %}
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -26,19 +26,12 @@
                     <div class="row">
                         <div class="col-lg-5">
                             <div class="media">
-                                <div class="mr-3">
-                                    <div class="avatar-md">
-                                            <h1 class="avatar-title rounded-circle">
-                                                {{ customer.first_name|first|upper }}
-                                            </h1>
-                                        </div>
-                                </div>
+
                                 <div class="media-body align-self-center">
                                     <div class="text-muted">
-                                        <p class="mb-2">Welcome to {{ customer.first_name|capfirst }}'s  dashboard</p>
-                                        <h5 class="mb-1">{{ customer.entity.details.name }}</h5>
+                                        <h5 class="mb-1">{{ product.name }}</h5>
                                         <p class="mb-0 badge badge-dark">
-                                            Individual Account
+                                            Product Dashboard
                                         </p>
                                     </div>
                                 </div>
@@ -50,29 +43,23 @@
                                 <div class="row">
                                     <div class="col-4">
                                         <div>
-                                            <p class="text-muted text-truncate mb-2">Email</p>
-                                            <h5 class="mb-0">{{ customer.email }}</h5>
+                                            <p class="text-muted text-truncate mb-2">Avg. Rating</p>
+                                            <h5 class="mb-0">N{{ product.avg_rating|default:0|intcomma }}</h5>
                                         </div>
                                     </div>
-                                    <div class="col-3">
-                                        <div>
-                                            <p class="text-muted text-truncate mb-2">Mobile Number</p>
-                                            <h5 class="mb-0">{{ customer.phone }}</h5>
-                                        </div>
-                                    </div>
+
                                     <div class="col-5">
                                         <div>
-                                            {% if customer.is_active %}
-                                                <a href="{% url 'customer_control' user_id 'deactivate' %}" class="btn btn-danger">Deactivate User </a>
+                                            {% if product.is_active %}
+                                                <a href="{% url 'product_control' product.id 'deactivate' %}" class="btn btn-danger">Deactivate Product </a>
                                             {% else %}
-                                                <a href="{% url 'customer_control' user_id 'activate'  %}" class="btn btn-success">Activate User </a>
+                                                <a href="{% url 'product_control' product.id 'activate'  %}" class="btn btn-success">Activate Product </a>
                                             {% endif %}
-                                        {% if customer.access %}
-                                                <a href="{% url 'customer_control' user_id 'disapprove' %}" class="btn btn-danger">Disapprove User </a>
+                                            {% if product.is_publish %}
+                                                <a href="{% url 'product_control' product.id 'unpublish' %}" class="btn btn-danger">Unpublish Product </a>
                                             {% else %}
-                                                <a href="{% url 'customer_control' user_id 'approve'  %}" class="btn btn-success">Approve User </a>
+                                                <a href="{% url 'product_control' product.id 'publish'  %}" class="btn btn-success">Publish Product </a>
                                             {% endif %}
-{#                                            <button data-action-type="account" data-action="deletion" data-href="{% url 'account_deletion' user_id  "customers" %}" class="confirm btn btn-danger"><i class="fa fa-trash"></i> Delete</button>#}
 
                                         </div>
                                     </div>
@@ -85,33 +72,33 @@
             </div>
         </div>
     </div>
-{#            <div class="row">#}
-{#        <div class="col-xl-12">#}
-{#            <div class="card">#}
-{#                <div class="card-body">#}
-{#                    <form id="dateSort">#}
-{#                        <div class="form-row">#}
-{#                            <div class="col-3 form-group">#}
-{#                                <label> From </label>#}
-{#                                <input type="date" id="from_date" name="from_date" class="form-control" >#}
-{#                            </div>#}
-{#                            <div class="col-3 form-group">#}
-{#                                <label> To </label>#}
-{#                                <input type="date" id="to_date" name="to_date" class="form-control" >#}
-{#                            </div>#}
-{#                            <div class="col-3 form-group">#}
-{#                                <label>&nbsp;</label>#}
-{#                                <br/>#}
-{#                                <input type="hidden" name="user_id" value="{{ user_id }}">#}
-{#                                <input type="hidden" name="sort_by" value="none"/>#}
-{#                                <button class="btn  btn-primary"><i class="fa fa-search"></i></button>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </form>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
+            <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <form id="dateSort">
+                        <div class="form-row">
+                            <div class="col-3 form-group">
+                                <label> From </label>
+                                <input type="date" id="from_date" name="from_date" class="form-control" >
+                            </div>
+                            <div class="col-3 form-group">
+                                <label> To </label>
+                                <input type="date" id="to_date" name="to_date" class="form-control" >
+                            </div>
+                            <div class="col-3 form-group">
+                                <label>&nbsp;</label>
+                                <br/>
+                                <input type="hidden" name="product_id" value="{{ product_id }}">
+                                <input type="hidden" name="sort_by" value="none"/>
+                                <button class="btn  btn-primary"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-xl-12">
@@ -125,10 +112,10 @@
                                         <i class="bx bx-copy-alt"></i>
                                     </span>
                                 </div>
-                                <h5 class="font-size-14 mb-0">Total Spent</h5>
+                                <h5 class="font-size-14 mb-0">Total Views</h5>
                             </div>
                             <div class="text-muted mt-4">
-                                <h4 class="">&#8358; {{ analytics.total_spent.amount|default:0|intcomma }}</h4>
+                                <h4 class="total_views"> 0</h4>
                             </div>
                         </div>
                     </div>
@@ -142,10 +129,10 @@
                                         <i class="bx bx-copy-alt"></i>
                                     </span>
                                 </div>
-                                <h5 class="font-size-14 mb-0">Total Orders</h5>
+                                <h5 class="font-size-14 mb-0">Total Sales</h5>
                             </div>
                             <div class="text-muted mt-4">
-                                <h4 class="total">{{ analytics.total_orders|intcomma }}</h4>
+                                <h4 class="total_sales">&#8358; 0</h4>
 
                             </div>
                         </div>
@@ -161,10 +148,10 @@
                                         <i class="bx bx-copy-alt"></i>
                                     </span>
                                 </div>
-                                <h5 class="font-size-14 mb-0">Processing Orders</h5>
+                                <h5 class="font-size-14 mb-0">Total Reviews</h5>
                             </div>
                             <div class="text-muted mt-4">
-                                <h4 class="cancelled">{{ analytics.total_processing_orders|intcomma }}</h4>
+                                <h4 class="total_reviews">0</h4>
                             </div>
                         </div>
                     </div>
@@ -178,10 +165,10 @@
                                         <i class="bx bx-copy-alt"></i>
                                     </span>
                                 </div>
-                                <h5 class="font-size-14 mb-0">Completed Orders</h5>
+                                <h5 class="font-size-14 mb-0">Total Return</h5>
                             </div>
                             <div class="text-muted mt-4">
-                                <h4 class="">{{ analytics.total_completed_orders|intcomma }}</h4>
+                                <h4 class="total_returns">0</h4>
 
                             </div>
                         </div>
@@ -195,48 +182,58 @@
         <div class="col-6">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Customer Details</h4>
+                    <h4 class="card-title">Product Details</h4>
                     <hr>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
                                 <table class="table">
                                     <tr>
-                                        <th>Full Name</th>
-                                        <td>{{ customer.first_name|capfirst }} {{ customer.last_name|capfirst }}</td>
-                                    </tr>
-{#                                    <tr>#}
-{#                                        <th>Business Name</th>#}
-{#                                        <td>{{ customer.business|default:"None" }}</td>#}
-{#                                    </tr>#}
-                                    <tr>
-                                        <th>Email</th>
-                                        <td>{{ customer.email }}</td>
+                                        <th>Title</th>
+                                        <td>{{ product.title|capfirst }} </td>
                                     </tr>
                                     <tr>
-                                        <th>Phone</th>
-                                        <td>{{ customer.phone }}</td>
-                                    </tr>
-{#                                    <tr>#}
-{#                                        <th>Address</th>#}
-{#                                        <td>{{ customer.address }}</td>#}
-{#                                    </tr>#}
-{#                                    <tr>#}
-{#                                        <th>Referral Code</th>#}
-{#                                        <td>{{ customer.referral_code }}</td>#}
-{#                                    </tr>#}
-                                    <tr>
-                                        <th>Date Joined</th>
-                                        <td>{{ customer.date_joined }}</td>
+                                        <th>Business Name</th>
+                                        <td>{{ product.business_name }}</td>
                                     </tr>
                                     <tr>
-                                        <th>KYC Status</th>
-                                        <td>{% if not customer.access %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
+                                        <th>Cost Price</th>
+                                        <td>{{ product.cost_price }}</td>
+                                    </tr>
+                                <tr>
+                                        <th>Selling Price</th>
+                                        <td>{{ product.selling_price }}</td>
+                                    </tr>
+                                <tr>
+                                        <th>Quantity</th>
+                                        <td>{{ product.quantity }}</td>
+                                    </tr>
+                                <tr>
+                                        <th>Category</th>
+                                        <td>{{ product.category_name }}</td>
+                                    </tr>
+                                <tr>
+                                        <th>Sub Category</th>
+                                        <td>{{ product.sub_category_name }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Account Status</th>
-                                        <td>{% if not customer.is_active %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
+                                        <th>Description</th>
+                                        <td>{{ product.description }}</td>
                                     </tr>
+                                    <tr>
+                                        <th>Is Active</th>
+                                        <td>{{ product.is_active }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Is Published</th>
+                                        <td>{{ product.is_publish }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Date Created</th>
+                                        <td>{{ product.date_created }}</td>
+                                    </tr>
+
                                 </table>
                             </div>
                         </div>
@@ -304,7 +301,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="text-danger text-center"> User not found.</h5>
+                        <h5 class="text-danger text-center"> Product not found.</h5>
                     </div>
                 </div>
             </div>

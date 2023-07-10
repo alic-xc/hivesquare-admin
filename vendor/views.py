@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.views import generic
 from helpers.services import CustomContextMixin, get_vendors_list, error_handler, \
-    delete_customer_files, approve_customer_kyc, UserLoginRequiredMixin, get_request, SearchMixin
+    delete_customer_files, approve_customer_kyc, UserLoginRequiredMixin, get_request, SearchMixin, patch_request
 
 
 class VendorView(UserLoginRequiredMixin, CustomContextMixin, SearchMixin, generic.TemplateView):
@@ -13,7 +13,7 @@ class VendorView(UserLoginRequiredMixin, CustomContextMixin, SearchMixin, generi
         params = {}
         page = self.request.GET.get('page', '')
         params['page'] = page
-        context['analytics'] = get_request(self.request, 'customers_analytics/')
+        context['analytics'] = get_request(self.request, 'customers_analytics/?user_type=vendor')
         context['vendors'] = get_vendors_list(self.request, params)
         return context
 
@@ -32,12 +32,25 @@ class VendorDetailsView(UserLoginRequiredMixin, CustomContextMixin, generic.Temp
 
 
 def vendor_kyc(request, user_id, action):
-    conn = approve_customer_kyc(request, user_id, action)
-    msg = {'activate': 'activated', 'deactivate': 'deactivated', 'approve': 'approved', 'disapprove': 'disapproved'}
+    params = {}
+    if action == 'deactivate':
+        params['is_active'] = False
+
+    elif action == 'activate':
+        params['is_active'] = True
+
+    elif action == 'approve':
+        params['is_verified'] = True
+
+    elif action == 'disapprove':
+        params['is_verified'] = False
+
+    conn = patch_request(request, "accounts/%s/?user_type=vendor" % user_id, params)
     if conn['success']:
-        messages.success(request, "Customer %s successfully" % msg[action])
+        messages.success(request, "Action performed successfully")
     else:
         error_handler(request, conn['data'])
+
     return redirect('vendor', user_id)
 
 

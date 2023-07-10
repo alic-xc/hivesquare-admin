@@ -34,10 +34,16 @@ class CustomerDetailsView(UserLoginRequiredMixin, CustomContextMixin, generic.Te
 def customer_kyc(request, user_id, action):
     params = {}
     if action == 'deactivate':
-        params['access'] = False
+        params['is_active'] = False
 
     elif action == 'activate':
+        params['is_active'] = True
+
+    elif action == 'approve':
         params['access'] = True
+
+    elif action == 'disapprove':
+        params['access'] = False
 
     conn = patch_request(request, "accounts/%s/?user_type=user" % user_id, params)
     if conn['success']:

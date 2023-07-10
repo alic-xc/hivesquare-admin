@@ -62,16 +62,16 @@
                                     </div>
                                     <div class="col-5">
                                         <div>
-                                            {% if vendor.access %}
+                                            {% if vendor.is_active %}
                                                 <a href="{% url 'vendor_control' user_id 'deactivate' %}" class="btn btn-danger">Deactivate User </a>
                                             {% else %}
                                                 <a href="{% url 'vendor_control' user_id 'activate'  %}" class="btn btn-success">Activate User </a>
                                             {% endif %}
 
                                         {% if vendor.is_verified %}
-                                                <a href="{% url 'vendor_control' user_id 'deactivate' %}" class="btn btn-danger"> Disapprove account </a>
+                                                <a href="{% url 'vendor_control' user_id 'disapprove' %}" class="btn btn-danger"> Disapprove account </a>
                                             {% else %}
-                                                <a href="{% url 'vendor_control' user_id 'activate'  %}" class="btn btn-success"> Approve account </a>
+                                                <a href="{% url 'vendor_control' user_id 'approve'  %}" class="btn btn-success"> Approve account </a>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -99,7 +99,7 @@
                                 <h5 class="font-size-14 mb-0">Total Businesses</h5>
                             </div>
                             <div class="text-muted mt-4">
-                                <h4 class="">{{ analytics.total_business|intcomma|default_if_none:0 }}</h4>
+                                <h4 class="">{{ analytics.total_business|default:0|intcomma }}</h4>
                             </div>
                         </div>
                     </div>
@@ -152,7 +152,7 @@
                                 <h5 class="font-size-14 mb-0">Total Earnings</h5>
                             </div>
                             <div class="text-muted mt-4">
-                                <h4 class="">&#8358; {{ analytics.total_earnings.amount|intcomma|default_if_none:0 }}</h4>
+                                <h4 class="">&#8358; {{ analytics.total_earnings.amount|default:0|intcomma }}</h4>
 
                             </div>
                         </div>
@@ -193,12 +193,12 @@
                                         <td>{{ vendor.date_joined }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Account Verified</th>
-                                        <td>{% if not vendor.is_verified %}<span class="badge badge-danger">No</span> {% else %} <span class="badge badge-success">Yes</span> {% endif %}</td>
+                                        <th>Account Status</th>
+                                        <td>{% if not vendor.is_active %}<span class="badge badge-danger">No</span> {% else %} <span class="badge badge-success">Yes</span> {% endif %}</td>
                                     </tr>
                                     <tr>
-                                        <th>Activated</th>
-                                        <td>{% if not vendor.access %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
+                                        <th>KYC Verification</th>
+                                        <td>{% if not vendor.is_verified %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
                                     </tr>
                                 </table>
                             </div>

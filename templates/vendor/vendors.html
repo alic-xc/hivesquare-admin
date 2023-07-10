@@ -133,7 +133,8 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
                                     <th scope="col">Phone Number</th>
-                                    <th scope="col">Status</th>
+                                    <th scope="col">Account Status</th>
+                                    <th scope="col">KYC Verification</th>
                                     <th scope="col">Date Created</th>
                                 </tr>
                             </thead>
@@ -152,7 +153,8 @@
                                     <td>{{ vendor.first_name|capfirst }} {{ vendor.last_name|capfirst }}</td>
                                     <td>{{ vendor.email }}</td>
                                     <td>{{ vendor.phone }}</td>
-                                    <td>{% if not vendor.access %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
+                                    <td>{% if not vendor.is_active %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
+                                    <td>{% if not vendor.is_verified %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
                                     <td>{{ vendor.date_joined }}</td>
                                 </tr>
                             {% empty %}

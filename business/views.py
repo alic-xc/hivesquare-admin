@@ -16,7 +16,6 @@ class BusinessView(UserLoginRequiredMixin, CustomContextMixin, SearchMixin, gene
         params['page'] = page
         context['analytics'] = get_request(self.request, 'business_analytics/')
         context['businesses'] = get_businesses_list(self.request, params)
-        print(context['businesses'])
         return context
 
 
@@ -27,6 +26,30 @@ class BusinessDetailsView(UserLoginRequiredMixin, CustomContextMixin, generic.Te
         context = super().get_context_data()
         business_id = self.kwargs['business_id']
         context['business_id'] = business_id
-        context['analytics'] = get_request(self.request, 'business_analytic/?user=%s' % business_id)
+        context['analytics'] = get_request(self.request, 'business_analytic/?business_id=%s' % business_id)
         context['business'] = get_request(self.request, "business/%s/" % business_id)
+        print(context['analytics'])
         return context
+
+
+def business_kyc(request, user_id, action):
+    params = {}
+    if action == 'deactivate':
+        params['is_active'] = False
+
+    elif action == 'activate':
+        params['is_active'] = True
+
+    elif action == 'approve':
+        params['access'] = True
+
+    elif action == 'disapprove':
+        params['access'] = False
+
+    conn = patch_request(request, "accounts/%s/?user_type=user" % user_id, params)
+    if conn['success']:
+        messages.success(request, "Action performed successfully")
+    else:
+        error_handler(request, conn['data'])
+
+    return redirect('customer', user_id)

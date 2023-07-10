@@ -107,29 +107,24 @@ def analytics(request):
     to_date = request.GET.get('to_date', None)
     from_date = str(from_date).replace('/', '-').strip(' ')
     to_date = str(to_date).replace('/', '-').strip(' ')
-    user_id = request.GET.get('user_id', None)
-    company_id = request.GET.get('merchant_id', None)
-    driver_id = request.GET.get('rider_id', None)
-    vehicle_id = request.GET.get('vehicle_id', None)
+    business_id = request.GET.get('business_id', None)
+    product_id = request.GET.get('product_id', None)
+
     query_params = "from_date=%s&to_date=%s" % (from_date, to_date)
 
-    if vehicle_id:
-        query_params += "&vehicle_id=%s&sort_by=%s" % (vehicle_id, sort_by)
-    elif driver_id:
-        query_params += "&rider_id=%s&sort_by=%s" % (driver_id, sort_by)
-    elif company_id:
-        query_params += "&company_id=%s&sort_by=%s" % (company_id, sort_by)
-    else:
-        query_params += "&user_id=%s" % user_id
+    if business_id:
+        query_params += "&business_id=%s&sort_by=%s" % (business_id, sort_by)
+
+    if product_id:
+        query_params += "&product_id=%s&sort_by=%s" % (product_id, sort_by)
 
     conn = connect_analytics(request, query_params)
+
     results = {}
     if not conn['success']:
         results['results'] = []
     else:
         results['results'] = conn['data']
-        # if not user_id:
-            # results['graph'] = generate_graph_data(conn['data']['graph_data'], sort_by)
 
     return JsonResponse(data=results, status=200)
 

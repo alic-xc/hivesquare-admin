@@ -6,19 +6,19 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-flex align-items-center justify-content-between">
-                <h4 class="mb-0 font-size-18">Business</h4>
+                <h4 class="mb-0 font-size-18">Order</h4>
 
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Business</a></li>
-                        <li class="breadcrumb-item active">{{ busines.id}}</li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Order</a></li>
+                        <li class="breadcrumb-item active">{{ order.track_id }}</li>
                     </ol>
                 </div>
 
             </div>
         </div>
     </div>
-    {% if business %}
+    {% if order %}
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -26,15 +26,12 @@
                     <div class="row">
                         <div class="col-lg-5">
                             <div class="media">
-                                <div class="mr-3">
-                                                <img src="{{ business.logo }}" width="70" height="70" class="rounded-circle" />
-                                </div>
+
                                 <div class="media-body align-self-center">
                                     <div class="text-muted">
-                                        <p class="mb-2">Welcome to <b>{{ business.name|capfirst }}</b></p>
-{#                                        <h5 class="mb-1">{{ customer.entity.details.name }}</h5>#}
+                                        <h5 class="mb-1">{{ order.track_id }}</h5>
                                         <p class="mb-0 badge badge-dark">
-                                            Business Account
+                                            Order Dashboard
                                         </p>
                                     </div>
                                 </div>
@@ -46,23 +43,20 @@
                                 <div class="row">
                                     <div class="col-4">
                                         <div>
-                                            <p class="text-muted text-truncate mb-2">Category</p>
-                                            <h5 class="mb-0">{{ business.category_name }}</h5>
+                                            <p class="text-muted text-truncate mb-2">Status</p>
+                                            <h5 class="mb-0">N{{ product.avg_rating|default:0|intcomma }}</h5>
                                         </div>
                                     </div>
-{#                                    <div class="col-3">#}
-{#                                        <div>#}
-{#                                            <p class="text-muted text-truncate mb-2"></p>#}
-{#                                            <h5 class="mb-0">{{ customer.phone }}</h5>#}
-{#                                        </div>#}
-{#                                    </div>#}
+
                                     <div class="col-5">
                                         <div>
-                                            {% if business.is_active %}
-                                                <a href="{% url 'business_control' business.id 'deactivate' %}" class="btn btn-danger">Deactivate Business </a>
-                                            {% else %}
-                                                <a href="{% url 'business_control' business.id 'activate'  %}" class="btn btn-success">Activate Business </a>
-                                            {% endif %}
+                                            {% if order.is_active %}
+                                                <a href="{% url 'product_control' order.id 'deactivate' %}" class="btn btn-danger">Terminate Order </a>
+                                                {% endif %}
+{#                                            {% else %}#}
+{#                                                <a href="{% url 'product_control' order.id 'activate'  %}" class="btn btn-success"></a>#}
+{#                                            {% endif %}#}
+
 
                                         </div>
                                     </div>
@@ -75,33 +69,7 @@
             </div>
         </div>
     </div>
-            <div class="row">
-        <div class="col-xl-12">
-            <div class="card">
-                <div class="card-body">
-                    <form id="dateSort">
-                        <div class="form-row">
-                            <div class="col-3 form-group">
-                                <label> From </label>
-                                <input type="date" id="from_date" name="from_date" class="form-control" >
-                            </div>
-                            <div class="col-3 form-group">
-                                <label> To </label>
-                                <input type="date" id="to_date" name="to_date" class="form-control" >
-                            </div>
-                            <div class="col-3 form-group">
-                                <label>&nbsp;</label>
-                                <br/>
-                                <input type="hidden" name="business_id" value="{{ business.id }}">
-                                <input type="hidden" name="sort_by" value="none"/>
-                                <button class="btn  btn-primary"><i class="fa fa-search"></i></button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <div class="row">
         <div class="col-xl-12">
@@ -115,10 +83,10 @@
                                         <i class="bx bx-copy-alt"></i>
                                     </span>
                                 </div>
-                                <h5 class="font-size-14 mb-0">Total Products</h5>
+                                <h5 class="font-size-14 mb-0">Total Items</h5>
                             </div>
                             <div class="text-muted mt-4">
-                                <h4 class="total_products">0</h4>
+                                <h4 class="total_views">{{ analytics.total_items|intcomma }}</h4>
                             </div>
                         </div>
                     </div>
@@ -132,10 +100,11 @@
                                         <i class="bx bx-copy-alt"></i>
                                     </span>
                                 </div>
-                                <h5 class="font-size-14 mb-0">Total Sales</h5>
+                                <h5 class="font-size-14 mb-0">Total Processing Items</h5>
                             </div>
                             <div class="text-muted mt-4">
-                                <h4 class="total_sales">N0</h4>
+                                <h4 class="total_sales">{{ analytics.total_processing_items|intcomma }}</h4>
+
                             </div>
                         </div>
                     </div>
@@ -150,10 +119,10 @@
                                         <i class="bx bx-copy-alt"></i>
                                     </span>
                                 </div>
-                                <h5 class="font-size-14 mb-0">Total Orders</h5>
+                                <h5 class="font-size-14 mb-0">Total Completed Items</h5>
                             </div>
                             <div class="text-muted mt-4">
-                                <h4 class="total_orders">0</h4>
+                                <h4 class="total_reviews">{{ analytics.total_completed_items|intcomma }}</h4>
                             </div>
                         </div>
                     </div>
@@ -167,10 +136,10 @@
                                         <i class="bx bx-copy-alt"></i>
                                     </span>
                                 </div>
-                                <h5 class="font-size-14 mb-0">Completed Orders</h5>
+                                <h5 class="font-size-14 mb-0">Total Returned Items</h5>
                             </div>
                             <div class="text-muted mt-4">
-                                <h4 class="total_completed_orders">0</h4>
+                                <h4 class="total_returns">{{ analytics.total_returned_items|intcomma }}</h4>
 
                             </div>
                         </div>
@@ -181,51 +150,60 @@
 
     </div>
     <div class="row">
-        <div class="col-6">
+        <div class="col-5">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Business Details</h4>
+                    <h4 class="card-title">Order Details</h4>
                     <hr>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
                                 <table class="table">
                                     <tr>
-                                        <th> Name</th>
-                                        <td>{{ business.name|capfirst }}</td>
+                                        <th>Track ID</th>
+                                        <td>{{ order.track_id }} </td>
                                     </tr>
                                     <tr>
-                                        <th>Category</th>
-                                        <td>{{ business.category_name }}</td>
+                                        <th>Total Items</th>
+                                        <td>{{ order.total_items }} </td>
                                     </tr>
                                     <tr>
-                                        <th>Vendor</th>
-                                        <td>{{ business.vendor }}</td>
-                                    </tr>
-                                <tr>
-                                        <th>Description</th>
-                                        <td>{{ business.description }}</td>
+                                        <th>Total Cost</th>
+                                        <td>{{ order.total_cost }} </td>
                                     </tr>
                                     <tr>
-                                        <th>Address</th>
-                                        <td>{{ business.address }}</td>
+                                        <th>Total Amount</th>
+                                        <td>{{ order.total_amount }} </td>
                                     </tr>
-<tr>
-                                        <th>City</th>
-                                        <td>{{ business.city }}</td>
+                                    <tr>
+                                        <th>Payment Confirmed</th>
+                                        <td>{{ order.is_payment_confirmed }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>User</th>
+                                        <td>{{ order.customer_name }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Shipping Contact Name</th>
+                                        <td>{{ order.shipping_contact_phone }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Shipping Address</th>
+                                        <td>{{ order.shipping_address }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Shipping Contact Phone</th>
+                                        <td>{{ order.shipping_contact_phone }} </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Status </th>
+                                        <td>{{ order.status }} </td>
                                     </tr>
                                     <tr>
                                         <th>Date Created</th>
-                                        <td>{{ business.date_created }}</td>
+                                        <td>{{ order.date_created }}</td>
                                     </tr>
-                                    <tr>
-                                        <th>Subscription</th>
-                                        <td>{% if not business.is_premuim %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Activated</th>
-                                        <td>{% if not business.is_active %}<span class="badge badge-danger">Inactive</span> {% else %} <span class="badge badge-success">Active</span> {% endif %}</td>
-                                    </tr>
+
                                 </table>
                             </div>
                         </div>
@@ -234,49 +212,49 @@
                 </div>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-7">
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="card-header bg-white p-0 d-flex justify-content-between align-items-center">
-                                <h4 class="card-title">Extra Information</h4>
+                                <h4 class="card-title">Order Items</h4>
                             </div>
 
                             <hr>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Document</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for document in customer.docs %}
-                                                    <tr>
-                                                        <td>
-                                                            {% if document == 'id_card' %}
-                                                                <a href="{{ media_url }}{{ customer.docs.id_card }}" target="_blank">ID Card</a>
-                                                            {% elif document == 'proof_address' %}
-                                                                <a href="{{ media_url }}{{ customer.docs.proof_address }}">Proof of Address</a>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>
-                                                            <a href="{% url 'delete_customer_files' customer.id 'id_card' 'welldone' %}"><i class="fa fa-trash"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                    {% empty %}
-                                                    <tr>
-                                                        <td colspan="2" class="text-center text-danger">No document found</td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
+                                    <table class="table table-centered table-nowrap table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Qty</th>
+                                    <th scope="col">Cost</th>
+                                    <th scope="col">Discount</th>
+                                    <th scope="col">Total Amount</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                                    </div>
+                            {% for booking_item in booking.items %}
+                                <tr>
+                                    <th scope="col">Track ID</th>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Qty</th>
+                                    <th scope="col">Cost</th>
+                                    <th scope="col">Discount</th>
+                                    <th scope="col">Total Amount</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center text-danger"> No bookings available</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
                                 </div>
                             </div>
 
@@ -293,7 +271,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="text-danger text-center"> User not found.</h5>
+                        <h5 class="text-danger text-center"> Product not found.</h5>
                     </div>
                 </div>
             </div>
@@ -309,7 +287,6 @@
             datePickerInit()
             const urlParams = $('#dateSort').serialize()
             dashboardRequest(urlParams)
-            console.log(urlParams)
             $('#dateSort').submit(function(e){
                 e.preventDefault()
                 dashboardRequest($(this).serialize())

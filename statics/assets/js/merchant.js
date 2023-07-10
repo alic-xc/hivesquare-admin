@@ -703,17 +703,21 @@ function dashboardWidgetsGraph(url){
             submitButton.removeClass('btn-progress')
             submitButton.removeClass('disabled')
             const results = response.results
-            const graph = response.graph_data
-            const revenueAmount = (results.revenue.amount)?results.revenue.amount:0
-            $('#revenue').html(currencyFormater(revenueAmount))
-            $('#deliveryCount').html(results.delivery_count)
-            $('#totalDeliveryCount').html(results.total_delivery_count)
-            $('#riders').html(results.rider_count)
-            $('#debt').html(currencyFormater(results.debt))
-            $('#earnings').html(currencyFormater(results.pending_earnings))
-            $('.completed').html(results.delivery_count.completed_deliveries)
-            $('.total').html(results.delivery_count.total_deliveries)
-            $('.cancelled').html(results.delivery_count.cancelled_deliveries)
+            console.log(results)
+            // const graph = response.graph_data
+            // $('#revenue').html(currencyFormater(revenueAmount))
+            // $('#deliveryCount').html(results.delivery_count)
+            // $('#totalDeliveryCount').html(results.total_delivery_count)
+            // $('#riders').html(results.rider_count)
+            // $('#debt').html(currencyFormater(results.debt))
+            // $('#earnings').html(currencyFormater(results.))
+            $('.total_orders').html(results.total_orders)
+            $('.total_completed_orders').html(results.total_completed_orders)
+            $('.total_sales').html(currencyFormater(results.total_sales.amount))
+            $('.total_products').html(results.total_products)
+            $('.total_views').html(results.total_product_views)
+            $('.total_reviews').html(currencyFormater(results.total_product_reviews))
+            $('.total_returns').html(results.total_return)
 
             // document.querySelector("#revenue-chart").innerHTML = ''
             if(graph){

@@ -41,18 +41,14 @@
                         <div class="col-lg-7 align-self-center">
                             <div class="text-lg-center mt-4 mt-lg-0">
                                 <div class="row">
-                                    <div class="col-4">
-                                        <div>
-                                            <p class="text-muted text-truncate mb-2">Status</p>
-                                            <h5 class="mb-0">N{{ product.avg_rating|default:0|intcomma }}</h5>
-                                        </div>
-                                    </div>
+
 
                                     <div class="col-5">
                                         <div>
                                             {% if order.is_active %}
                                                 <a href="{% url 'product_control' order.id 'deactivate' %}" class="btn btn-danger">Terminate Order </a>
                                                 {% endif %}
+
 {#                                            {% else %}#}
 {#                                                <a href="{% url 'product_control' order.id 'activate'  %}" class="btn btn-success"></a>#}
 {#                                            {% endif %}#}
@@ -150,7 +146,7 @@
 
     </div>
     <div class="row">
-        <div class="col-5">
+        <div class="col-4">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Order Details</h4>
@@ -212,13 +208,14 @@
                 </div>
             </div>
         </div>
-        <div class="col-7">
+        <div class="col-8">
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="card-header bg-white p-0 d-flex justify-content-between align-items-center">
                                 <h4 class="card-title">Order Items</h4>
+
                             </div>
 
                             <hr>
@@ -227,6 +224,7 @@
                                     <table class="table table-centered table-nowrap table-hover">
                             <thead class="thead-light">
                                 <tr>
+                                    <th scope="col">Vendor</th>
                                     <th scope="col">Product</th>
                                     <th scope="col">Qty</th>
                                     <th scope="col">Cost</th>
@@ -237,15 +235,15 @@
                             </thead>
                             <tbody>
 
-                            {% for booking_item in booking.items %}
+                            {% for booking_item in order.details %}
                                 <tr>
-                                    <th scope="col">Track ID</th>
-                                    <th scope="col">Product</th>
-                                    <th scope="col">Qty</th>
-                                    <th scope="col">Cost</th>
-                                    <th scope="col">Discount</th>
-                                    <th scope="col">Total Amount</th>
-                                    <th scope="col">Status</th>
+                                    <th scope="col"><a href="{% url 'vendor'  booking_item.vendor_id %}">{{ booking_item.vendor }}</a></th>
+                                    <th scope="col">{{ booking_item.product_name }}</th>
+                                    <th scope="col">{{ booking_item.quantity }}</th>
+                                    <th scope="col">{{ booking_item.item_cost|intcomma }}</th>
+                                    <th scope="col">{{ booking_item.discount }}</th>
+                                    <th scope="col">{{ booking_item.total_cost|intcomma }}</th>
+                                    <th scope="col">{{ booking_item.status }}</th>
                                 </tr>
                             {% empty %}
                                 <tr>

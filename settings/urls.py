@@ -10,5 +10,6 @@ urlpatterns = [
     path('sub-category', SubCategoryView.as_view(), name='sub-category'),
     path('business-category', BusinessCategoryView.as_view(), name='business-category'),
     path('subscription', SubscriptionView.as_view(), name='subscription'),
-
+    path('premium_payments', PremiumPaymentsView.as_view(), name='premium_payments'),
+    path('premium_payment/<id>', PremiumPaymentDetailsView.as_view(), name='premium_payment_details'),
 ]

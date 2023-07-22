@@ -187,6 +187,42 @@ class BusinessCategoryView(UserLoginRequiredMixin, CustomContextMixin, generic.F
         return reverse('business-category')
 
 
+
+class SubscriptionView(UserLoginRequiredMixin, generic.TemplateView):
+    template_name = 'settings/subscription.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['subscriptions'] = get_request(self.request, 'subscriptions')
+        return context
+
+
+class PremiumPaymentsView(UserLoginRequiredMixin, CustomContextMixin, generic.TemplateView):
+    template_name = 'extra/premium_payments.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        params = {}
+        page = self.request.GET.get('page', 1)
+        params['page'] = page
+        context['premium_payments'] = get_premium_payment_list(self.request, None, params)
+        context['pagination'] = history_pagination(context['premium_payments'])
+
+        return context
+
+
+class PremiumPaymentDetailsView(UserLoginRequiredMixin, CustomContextMixin, generic.TemplateView):
+    template_name = 'extra/premium_payment_details.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        premium_id = self.kwargs['id']
+        context['premium_payment'] = get_premium_payment(self.request, premium_id)
+        return context
+
+
+
+
 def delete_action(request, object_id, object_type):
     if object_type == 'category':
         url = 'category/%s/' % object_id
@@ -229,13 +265,3 @@ def delete_action(request, object_id, object_type):
 
     else:
         return redirect('dashboard')
-
-
-class SubscriptionView(UserLoginRequiredMixin, generic.TemplateView):
-    template_name = 'settings/subscription.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        context['subscriptions'] = get_request(self.request, 'subscriptions')
-        return context
-

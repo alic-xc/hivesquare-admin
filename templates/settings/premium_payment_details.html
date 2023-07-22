@@ -1,0 +1,107 @@
+{% extends 'base/base.html' %}
+{% load customer_custom_tags %}
+{% load humanize %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="mb-0 font-size-18">Premium Payment</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Premium</a></li>
+                        <li class="breadcrumb-item active">{{ transaction.token }}</li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Premium Payment Details</h4>
+                    <div class="row">
+                    {% if premium_payment %}
+                    <div class="col-md-6">
+                        <div class="table-responsive">
+                            <table class="table mt-4">
+                                <tbody>
+
+                                    <tr>
+                                        <th>Office</th>
+                                        <td><b>{{ premium_payment.premium_details.listing }}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Status </th>
+                                        <td><b>{% if premium_payment.premium_details.status == 'pending' %}<span class="badge badge-warning">{% elif premium_payment.premium_details.status == 'active' %}<span class="badge badge-success">{% else %}<span class="badge badge-danger">{% endif %} {{premium_payment.premium_details.status}} </span></b></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Start Date</th>
+                                        <td><b>{{ premium_payment.premium_details.start_date|string_to_date_object }}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <th>End Date</th>
+                                        <td><b>{{ premium_payment.premium_details.end_date|string_to_date_object }}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Is Completed </th>
+                                        <td><b>{% if not premium_payment.is_completed %}<span class="badge badge-warning"> not completed {% else %}<span class="badge badge-success"> completed {% endif %}</span></b></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Initiated by</th>
+                                        <td><b>{{ premium_payment.premium_mode }}</b></td>
+                                    </tr>
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="px-3">
+                            <ul class="list-unstyled">
+                                    <li class="mb-2">Amount <span class="float-right text-3">{{ premium_payment.currency }} {{ premium_payment.amount|intcomma }}</span></li>
+                                                                                                  </ul>
+                            <hr class="mb-2">
+                            <p class="d-flex align-items-center mb-4">Total Amount
+                                <span class="text-3 ml-auto">
+                                    {{ premium_payment.currency }} {{ premium_payment.amount|intcomma }}
+                                </span>
+                            </p>
+                            <ul class="list-unstyled">
+                                <li class="font-weight">Payment Ref</li>
+                                <li class="text-muted">
+                                    {{ premium_payment.payment_ref }}
+                                </li>
+                            </ul>
+                            <ul class="list-unstyled">
+                                <li class="font-weight">Status</li>
+                                <li class="text-muted">
+                                    {% if premium_payment.status == 'pending' %}<span class="badge badge-warning">{% elif premium_payment.status == 'paid' %}<span class="badge badge-success">{% else %}<span class="badge badge-danger">{% endif %} {{premium_payment.status}} </span>
+                                </li>
+                            </ul>
+                            <ul class="list-unstyled">
+                                <li class="font-weight">Payment Date</li>
+                                <li class="text-muted">
+                                    {{ premium_payment.payment_date|string_to_date|string_to_date_object|default:"None" }}
+                                </li>
+                            </ul>
+
+
+                        </div>
+                    </div>
+                    {% else %}
+                        <div class="mx-auto">
+                            <h5 class="text-center text-danger p-3">Not a valid transaction ID</h5>
+                        </div>
+                    {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end col -->
+    </div>
+{% endblock %}

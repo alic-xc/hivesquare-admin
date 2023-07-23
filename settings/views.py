@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views import generic
-from settings.forms import SlideShowForm, CategoryForm, SubCategoryForm, BusinessCategoryForm, AdsForm
+from settings.forms import SlideShowForm, CategoryForm, SubCategoryForm, BusinessCategoryForm, AdsForm, SubscriptionForm
 from helpers.connector import data_connector, file_connector
 from helpers.services import UserLoginRequiredMixin, CustomContextMixin, error_handler, history_pagination, get_request, \
     params_extracter, post_request, delete_request
@@ -187,40 +187,43 @@ class BusinessCategoryView(UserLoginRequiredMixin, CustomContextMixin, generic.F
         return reverse('business-category')
 
 
-
-class SubscriptionView(UserLoginRequiredMixin, generic.TemplateView):
+class SubscriptionView(UserLoginRequiredMixin, generic.FormView):
     template_name = 'settings/subscription.html'
+    form_class = SubscriptionForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['subscriptions'] = get_request(self.request, 'subscriptions')
+        context['subscriptions'] = get_request(self.request, 'subscription/')
         return context
 
+    def form_valid(self, form):
 
-class PremiumPaymentsView(UserLoginRequiredMixin, CustomContextMixin, generic.TemplateView):
-    template_name = 'extra/premium_payments.html'
+        url = 'subscription/'
+        data = form.cleaned_data
+        params = {
+            "title": data['title'],
+            "type": "premium",
+            "amount": str(data["amount"]),
+            "discount_1st_month": str(data["discount_1st_month"]),
+            "discount_3rd_month": str(data["discount_3rd_month"]),
+            "discount_12th_month": str(data["discount_12th_month"]),
+            "available_features": {"features": self.request.POST.get('features')},
+            "total_distance":  str(data['distance']),
+            "total_businesses":  data['store'],
+        }
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        params = {}
-        page = self.request.GET.get('page', 1)
-        params['page'] = page
-        context['premium_payments'] = get_premium_payment_list(self.request, None, params)
-        context['pagination'] = history_pagination(context['premium_payments'])
+        response = post_request(self.request, url, params)
+        if response['success']:
+            messages.success(self.request, "Subscription created successfully.")
 
-        return context
+        else:
+            error_handler(self.request, response['data'])
+            return super().form_invalid(form)
 
+        return super().form_valid(form)
 
-class PremiumPaymentDetailsView(UserLoginRequiredMixin, CustomContextMixin, generic.TemplateView):
-    template_name = 'extra/premium_payment_details.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        premium_id = self.kwargs['id']
-        context['premium_payment'] = get_premium_payment(self.request, premium_id)
-        return context
-
-
+    def get_success_url(self):
+        return reverse('subscription')
 
 
 def delete_action(request, object_id, object_type):

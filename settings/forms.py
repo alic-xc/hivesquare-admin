@@ -33,3 +33,14 @@ class SubCategoryForm(forms.Form):
     description = forms.CharField(required=True)
     category = forms.UUIDField(required=True)
     id = forms.UUIDField(required=False)
+
+
+class SubscriptionForm(forms.Form):
+    title = forms.CharField(required=True)
+    distance = forms.DecimalField(required=True)
+    store = forms.IntegerField(required=True)
+    amount = forms.DecimalField(required=True)
+    discount_1st_month = forms.DecimalField(required=True)
+    discount_3rd_month = forms.DecimalField(required=True)
+    discount_12th_month = forms.DecimalField(required=True)
+

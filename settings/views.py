@@ -129,7 +129,6 @@ class SubCategoryView(UserLoginRequiredMixin, CustomContextMixin, generic.FormVi
         return context
 
     def form_valid(self, form):
-
         url = 'sub-category/'
         data = form.cleaned_data
         image = base64.b64encode(data['image'].read()).decode('utf-8')
